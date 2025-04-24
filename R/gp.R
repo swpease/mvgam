@@ -242,7 +242,9 @@ make_gp_additions = function(
   # the gp() eigenfunctions
   coefs_replace <- list()
   for (x in gp_terms) {
-    label <- attr(terms(formula(mgcv_model)), 'term.labels')[x]
+    label <- attr(terms(formula(mgcv_model), keep.order = TRUE), 'term.labels')[
+      x
+    ]
     s_attributes <- eval(rlang::parse_expr(label))
     if (s_attributes$by != 'NA') {
       if (grepl('ti(', label, fixed = TRUE)) {
@@ -478,6 +480,16 @@ gp_to_s <- function(formula, data, family) {
   # Extract details of gp() terms
   gp_details <- get_gp_attributes(formula, data, family)
   termlabs <- attr(terms(formula, keep.order = TRUE), 'term.labels')
+
+  # Check for offsets as well
+  off_names <- grep(
+    'offset',
+    rownames(attr(terms.formula(formula), 'factors')),
+    value = TRUE
+  )
+  if (length(off_names) > 0L) {
+    termlabs <- c(termlabs, off_names)
+  }
 
   # Replace the gp() terms with s() for constructing the initial model
   which_gp <- which_are_gp(formula)

@@ -3,9 +3,18 @@
 \name{residual_cor.jsdgam}
 \alias{residual_cor.jsdgam}
 \alias{residual_cor}
-\title{Extract residual correlations based on latent factors from a fitted jsdgam}
+\alias{residual_cor.mvgam}
+\title{Extract residual correlations based on latent factors}
 \usage{
 residual_cor(object, ...)
+
+\method{residual_cor}{mvgam}(
+  object,
+  summary = TRUE,
+  robust = FALSE,
+  probs = c(0.025, 0.975),
+  ...
+)
 
 \method{residual_cor}{jsdgam}(
   object,
@@ -16,7 +25,9 @@ residual_cor(object, ...)
 )
 }
 \arguments{
-\item{object}{\code{list} object of class \code{mvgam} resulting from a call to \code{\link[=jsdgam]{jsdgam()}}}
+\item{object}{\code{list} object of class \code{mvgam} resulting from a call to \code{\link[=jsdgam]{jsdgam()}}
+or a call to \code{\link[=mvgam]{mvgam()}} in which either \code{use_lv = TRUE} or a multivariate process was used
+with \code{cor = TRUE} (see \code{\link[=RW]{RW()}} and \code{\link[=VAR]{VAR()}} for examples)}
 
 \item{...}{ignored}
 
@@ -30,7 +41,7 @@ If \code{TRUE}, the median is used instead. Only used if \code{summary} is \code
 function. Only used if \code{summary} is \code{TRUE}.}
 }
 \value{
-If \code{summary = TRUE}, a \code{list} of class \code{mvgam_residcor} with the following components:
+If \code{summary = TRUE}, a \code{list} of  \code{\link{mvgam_residcor-class}} with the following components:
 \item{cor, cor_lower, cor_upper}{A set of \eqn{p \times p} correlation matrices,
 containing either the posterior median or mean estimate, plus lower and upper limits
 of the corresponding credible intervals supplied to \code{probs}}
@@ -56,53 +67,45 @@ residual precision matrix draws}
 }
 \description{
 Compute residual correlation estimates from Joint Species Distribution
-\code{jsdgam} models using latent factor loadings
+(\code{jsdgam}) or \code{mvgam} models that either used latent factors
+or included correlated process errors directly
 }
 \details{
-Hui (2016) provides an excellent description of the quantities that this function calculates, so this passage
-is heavily paraphrased from his associated \pkg{boral} package.
-
-In Joint Species Distribution Models, the residual covariance matrix is calculated
-based on the matrix of latent factor loading matrix \eqn{\Theta}, where the residual covariance
-matrix \eqn{\Sigma = \Theta\Theta'}. A strong residual covariance/correlation matrix
-between two species can be interpreted as evidence of species interaction (e.g.,
-facilitation or competition),
-missing covariates, as well as any additional species correlation not accounted for by shared
-environmental captured in \code{formula}.
-
-The residual precision matrix (also known as partial correlation matrix, Ovaskainen et al., 2016)
-is defined as the inverse of the residual correlation matrix. The precision matrix is often used to
-identify direct or causal relationships between two species e.g., two species can have a zero
-precision but still be correlated, which can be interpreted as saying that two species are not
-directly associated, but they are still correlated \emph{through} other species. In other words, they
-are conditionally independent given the other species. It is important that the precision matrix
-does not exhibit the exact same properties of the correlation e.g., the diagonal elements are
-not equal to 1. Nevertheless, relatively larger values of precision may imply stronger
-direct relationships between two species.
-
-In addition to the residual correlation and precision matrices, the median or mean point estimator
-of trace of the residual covariance matrix is returned,
-\eqn{\sum\limits_{j=1}^p [\Theta\Theta']_{jj}}. Often used in other areas of multivariate
-statistics, the trace may be interpreted as the amount of covariation explained by the latent factors.
-One situation where the trace may be useful is when comparing a pure latent factor model
-(where no terms are suppled to \code{formula}) versus a model with latent
-factors and some additional predictors in \code{formula} -- the proportional difference in trace
-between these two models may be interpreted as the proportion of covariation between species explained
-by the predictors in \code{formula}. Of course, the trace itself is random due to the MCMC sampling, and so it
-is not always guaranteed to produce sensible answers.
+See \code{\link{mvgam_residcor-class}} for a full description of the quantities that are
+computed and returned by this function, along with key references.
 }
-\references{
-Francis KC Hui (2016). BORAL - Bayesian ordination and regression analysis of
-multivariate abundance data in R. Methods in Ecology and Evolution. 7, 744-750.
-\cr
-\cr
-Otso Ovaskainen et al. (2016). Using latent variable models to identify large networks of
-species-to-species associations at different spatial scales. Methods in Ecology and Evolution,
-7, 549-555.
+\examples{
+\donttest{
+# Fit a JSDGAM to the portal_data captures
+mod <- jsdgam(
+  formula = captures ~
+    # Fixed effects of NDVI and mintemp, row effect as a GP of time
+    ndvi_ma12:series + mintemp:series + gp(time, k = 15),
+  factor_formula = ~ -1,
+  data = portal_data,
+  unit = time,
+  species = series,
+  family = poisson(),
+  n_lv = 2,
+  silent = 2,
+  chains = 2
+)
+
+# Plot residual correlations
+plot(
+  residual_cor(mod)
+)
+
+# Compare to a residual ordination biplot
+if(requireNamespace('ggrepel', quietly = TRUE)){
+  ordinate(mod)
+}
+\dontshow{
+# For R CMD check: make sure any open connections are closed afterward
+ closeAllConnections()
+}
+}
 }
 \seealso{
-\code{\link[=jsdgam]{jsdgam()}}
-}
-\author{
-Nicholas J Clark
+\code{\link[=jsdgam]{jsdgam()}}, \code{\link[=lv_correlations]{lv_correlations()}}, \code{\link{mvgam_residcor-class}}
 }

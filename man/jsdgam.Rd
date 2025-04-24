@@ -179,7 +179,7 @@ is needed to fit the
 model is returned, along with the initial values for smooth and AR parameters,
 once the model is fitted.
 This will be helpful if users wish to modify the model file to add
-other stochastic elements that are not currently available in \code{mvgam}.
+other stochastic elements that are not currently available in \pkg{mvgam}.
 Default is \code{FALSE} to reduce
 the size of the returned object, unless \code{run_model == FALSE}}
 
@@ -241,6 +241,48 @@ modelling species' communities.
 }
 \examples{
 \donttest{
+# Fit a JSDGAM to the portal_data captures
+mod <- jsdgam(
+  formula = captures ~
+    # Fixed effects of NDVI and mintemp, row effect as a GP of time
+    ndvi_ma12:series + mintemp:series + gp(time, k = 15),
+  factor_formula = ~ -1,
+  data = portal_data,
+  unit = time,
+  species = series,
+  family = poisson(),
+  n_lv = 2,
+  silent = 2,
+  chains = 2
+)
+
+# Plot covariate effects
+library(ggplot2); theme_set(theme_bw())
+plot_predictions(
+ mod,
+ condition = c('ndvi_ma12','series', 'series')
+)
+
+plot_predictions(
+ mod,
+ condition = c('mintemp','series', 'series')
+)
+
+# A residual correlation plot
+plot(
+  residual_cor(mod)
+)
+
+# An ordination biplot can also be constructed
+# from the factor scores and their loadings
+if(requireNamespace('ggrepel', quietly = TRUE)){
+  ordinate(mod, alpha = 0.7)
+}
+
+
+# A more complicated example showing how to include predictors
+# in the factor_formula
+
 # Simulate latent count data for 500 spatial locations and 10 species
 set.seed(0)
 N_points <- 500
@@ -325,7 +367,6 @@ st_process \%>\%
   dplyr::group_by(lat, lon) -> dat
 
 # View the count distributions for each species
-library(ggplot2); theme_set(theme_bw())
 ggplot(dat, aes(x = count)) +
   geom_histogram() +
   facet_wrap(~ species, scales = 'free')
@@ -368,7 +409,7 @@ mod <- jsdgam(formula = count ~
               n_lv = 3,
 
               # Change default priors for fixed random effect variances and
-              # factor P marginal deviations to standard normal
+              # factor GP marginal deviations to standard normal
               priors = c(prior(std_normal(),
                                class = sigma_raw),
                          prior(std_normal(),
@@ -388,7 +429,7 @@ mod <- jsdgam(formula = count ~
               chains = 2,
               silent = 2)
 
-# Plot species-level intercept estimates
+# Plot the implicit species-level intercept estimates
 plot_predictions(mod, condition = 'species',
                  type = 'link')
 
@@ -420,9 +461,16 @@ names(post_cors)
 post_cors$cor[1:5, 1:5]
 post_cors$cor_upper[1:5, 1:5]
 post_cors$cor_lower[1:5, 1:5]
+
 # Plot of the posterior median correlations for those estimated
 # to be non-zero
-plot(post_cors)
+plot(post_cors, cluster = TRUE)
+
+# An ordination biplot can also be constructed
+# from the factor scores and their loadings
+if(requireNamespace('ggrepel', quietly = TRUE)){
+  ordinate(mod)
+}
 
 # Posterior predictive checks and ELPD-LOO can ascertain model fit
 pp_check(mod,
@@ -436,12 +484,12 @@ loo(mod)
 # note this calculation takes a few minutes because of the need to calculate
 # draws from the stochastic latent factors
 newdata <- st_process \%>\%
-                   dplyr::mutate(species = factor(species,
-                                                  levels = paste0('species_',
-                                                                  1:N_species))) \%>\%
-                   dplyr::group_by(lat, lon) \%>\%
-                   dplyr::mutate(site = dplyr::cur_group_id()) \%>\%
-                   dplyr::ungroup()
+ dplyr::mutate(species = factor(species,
+                                levels = paste0('species_',
+                                                1:N_species))) \%>\%
+ dplyr::group_by(lat, lon) \%>\%
+ dplyr::mutate(site = dplyr::cur_group_id()) \%>\%
+ dplyr::ungroup()
 preds <- predict(mod, newdata = newdata)
 
 # Plot the median log(count) predictions on a grid
@@ -451,6 +499,11 @@ ggplot(newdata, aes(x = lon, y = lat, col = log_count)) +
   facet_wrap(~ species, scales = 'free') +
   scale_color_viridis_c() +
   theme_classic()
+
+\dontshow{
+# For R CMD check: make sure any open connections are closed afterward
+ closeAllConnections()
+}
 }
 }
 \references{

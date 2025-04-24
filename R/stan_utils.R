@@ -2290,7 +2290,9 @@ vectorise_stan_lik = function(
       model_file[remainder_line] <-
         paste0(
           'for(s in 1:n_series){\n',
-          'trend[2:n, s] ~ normal(pow(ar1[s], to_vector(time_dis[2:n, s])) .* trend[1:(n - 1), s], sigma[s]);\n',
+          'trend[2:n, s] ~ normal(pow(ar1[s], to_vector(time_dis[2:n, s])) ',
+          '.* trend[1:(n - 1), s], ',
+          'sigma[s] * (1 - ar1[s]^(2*to_vector(time_dis[2:n, s]))) / (1 - ar1[s]^2));\n',
           '}'
         )
       model_file = readLines(textConnection(model_file), n = -1)
@@ -4478,7 +4480,10 @@ check_rhat <- function(
 
   no_warning <- TRUE
   rhats <- fit_summary[, 'Rhat']
-  if (max(rhats, na.rm = TRUE) > 1.05) no_warning <- FALSE
+  N = length(rhats[!is.na(rhats)])
+  n = length(which(rhats > 1.05))
+
+  if (round(100 * n / N, 4) > 2) no_warning <- FALSE
   if (no_warning) {
     if (!quiet) {
       insight::print_color('\u2714', "green")

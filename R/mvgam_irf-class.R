@@ -2,9 +2,21 @@
 #'
 #' A \code{mvgam_irf} object returned by function \code{\link{irf}}.
 #' Run `methods(class = "mvgam_irf")` to see an overview of available methods.
-#' @details A `mvgam_irf` object contains a `list` of posterior impulse response
+#' @details
+#' Generalized or Orthogonalized Impulse Response Functions can be computed
+#' using the posterior estimates of Vector Autoregressive parameters. This function
+#' generates a positive "shock" for a target process at time `t = 0` and then
+#' calculates how  each of the remaining processes in the latent VAR are expected
+#' to respond over the forecast horizon `h`. The function computes IRFs for all
+#' processes in the object and returns them in an array that can be plotted using
+#' the S3 `plot` function. To inspect community-level metrics of stability using latent
+#' VAR processes, you can use the related [stability()] function.
+#' A `mvgam_irf` object contains a `list` of posterior impulse response
 #' functions, each stored as its own `list`
 #' @seealso [mvgam], [VAR]
+#' @references PH Pesaran & Shin Yongcheol (1998).
+#' Generalized impulse response analysis in linear multivariate models.
+#' Economics Letters 58: 17–29.
 #' @author Nicholas J Clark
 #' @name mvgam_irf-class
 NULL
@@ -22,7 +34,7 @@ NULL
 #' in addition to the median
 #' @param ... ignored
 #'
-#' @return A long-format `tibble` reporting the posterior median,
+#' @return A long-format `tibble` / `data.frame` reporting the posterior median,
 #' upper and lower percentiles of the impulse responses of each series to shocks
 #' from each of the other series at all horizons.
 #'
@@ -34,12 +46,15 @@ NULL
 #'
 #' @export
 summary.mvgam_irf = function(object, probs = c(0.025, 0.975), ...) {
-  n_processes <- dim(object[[1]][[1]])[2]
-  h <- dim(object[[1]][[1]])[1]
-  n_draws <- length(object)
   if (length(probs) != 2L) {
     stop("argument 'probs' must be a vector of length 2", call. = FALSE)
   }
+  validate_proportional(min(probs))
+  validate_proportional(max(probs))
+
+  n_processes <- dim(object[[1]][[1]])[2]
+  h <- dim(object[[1]][[1]])[1]
+  n_draws <- length(object)
 
   out <- do.call(
     rbind,
@@ -67,12 +82,20 @@ summary.mvgam_irf = function(object, probs = c(0.025, 0.975), ...) {
         # Calculate posterior empirical quantiles of impulse responses
         dplyr::group_by(shock, horizon) %>%
         dplyr::summarise(
-          irf_median = median(imp_resp),
-          irf_Qlower = quantile(imp_resp, min(probs)),
-          irf_Qupper = quantile(imp_resp, max(probs)),
+          irfQ50 = median(imp_resp),
+          irfQlower = quantile(imp_resp, min(probs)),
+          irfQupper = quantile(imp_resp, max(probs)),
           .groups = 'keep'
         ) %>%
         dplyr::ungroup()
+      colnames(responses) <- c(
+        'shock',
+        'horizon',
+        'irfQ50',
+        paste0('irfQ', 100 * min(probs)),
+        paste0('irfQ', 100 * max(probs))
+      )
+      responses
     })
   )
 

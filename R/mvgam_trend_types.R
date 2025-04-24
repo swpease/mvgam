@@ -41,6 +41,9 @@
 #' @return An object of class \code{mvgam_trend}, which contains a list of
 #' arguments to be interpreted by the parsing functions in \pkg{mvgam}
 #' @rdname RW
+#' @details Use `vignette("mvgam_overview")` to see the full details of available
+#' stochastic trend types in \pkg{mvgam}, or view the rendered version on the package
+#' website at: https://nicholasjclark.github.io/mvgam/articles/mvgam_overview.html
 #' @author Nicholas J Clark
 #'@examples
 #'\donttest{
@@ -51,8 +54,7 @@
 #'                       sigma = 2,
 #'                       sigma_obs = 0.75){
 #'# Sample irregularly spaced time intervals
-#'time_dis <- c(0, runif(n - 1, -0.1, 1))
-#'time_dis[time_dis < 0] <- 0; time_dis <- time_dis * 5
+#'time_dis <- c(1, runif(n - 1, 0, 5))
 #'
 #'# Set up the latent dynamic process
 #'x <- vector(length = n); x[1] <- -0.3
@@ -60,9 +62,16 @@
 #'  # zero-distances will cause problems in sampling, so mvgam uses a
 #'  # minimum threshold; this simulation function emulates that process
 #'  if(time_dis[i] == 0){
-#'    x[i] <- rnorm(1, mean = (phi ^ 1e-12) * x[i - 1], sd = sigma)
+#'    x[i] <- rnorm(
+#'      1, mean = (phi^1e-3) * x[i - 1],
+#'      sd = sigma * (1 - phi^(2*1e-3)) / (1 - phi^2)
+#'    )
 #'   } else {
-#'     x[i] <- rnorm(1, mean = (phi ^ time_dis[i]) * x[i - 1], sd = sigma)
+#'    x[i] <- rnorm(
+#'      1,
+#'      mean = (phi^time_dis[i]) * x[i - 1],
+#'      sd = sigma * (1 - phi^(2*time_dis[i])) / (1 - phi^2)
+#'    )
 #'   }
 #' }
 #'
@@ -565,7 +574,7 @@ PW = function(
 #'                  0.5, 0.3, 1),
 #'                byrow = TRUE,
 #'                nrow = 3)
-#'                Sigma
+#'Sigma
 #'
 #'make_site_dat = function(...){
 #'  errors <- mgcv::rmvn(n = 30,

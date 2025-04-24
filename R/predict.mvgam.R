@@ -109,6 +109,11 @@ predict.mvgam = function(
   if (missing(newdata)) {
     newdata <- object$obs_data
   }
+  if (length(probs) != 2L) {
+    stop("argument 'probs' must be a vector of length 2", call. = FALSE)
+  }
+  validate_proportional(min(probs))
+  validate_proportional(max(probs))
 
   # Check names of supplied variables against those required
   # for prediction
@@ -384,6 +389,21 @@ predict.mvgam = function(
         if (attr(object$model_data, 'trend_model') %in% c('GP')) {
           family_pars <- list(
             sigma_obs = mcmc_chains(object$model_output, 'alpha_gp')
+          )
+        }
+        if (
+          attr(object$model_data, 'trend_model') %in%
+            c('PWlogistic', 'PWlinear')
+        ) {
+          trend_hcs <- hindcast(object, type = 'trend')
+          sigma_obs <- unlist(
+            lapply(seq_along(trend_hcs$hindcasts), function(x) {
+              mean(apply(trend_hcs$hindcasts[[x]], 2, sd))
+            }),
+            use.names = FALSE
+          )
+          family_pars <- list(
+            sigma_obs = sigma_obs
           )
         }
 

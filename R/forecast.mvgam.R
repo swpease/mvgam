@@ -1,5 +1,10 @@
+#' @importFrom generics forecast
+#' @export
+generics::forecast
+
 #'@title Extract or compute hindcasts and forecasts for a fitted \code{mvgam} object
 #'@name forecast.mvgam
+#'@method forecast mvgam
 #'@importFrom stats predict
 #'@importFrom rlang missing_arg
 #'@inheritParams predict.mvgam
@@ -19,13 +24,6 @@
 #'@return An object of class \code{mvgam_forecast} containing hindcast and forecast distributions.
 #'See \code{\link{mvgam_forecast-class}} for details.
 #'@seealso \code{\link{hindcast}}, \code{\link{score}}, \code{\link{ensemble}}
-#'@export
-forecast <- function(object, ...) {
-  UseMethod("forecast", object)
-}
-
-#'@rdname forecast.mvgam
-#'@method forecast mvgam
 #' @examples
 #' \donttest{
 #' simdat <- sim_mvgam(n_series = 3, trend_model = AR())
@@ -39,6 +37,11 @@ forecast <- function(object, ...) {
 #' # Hindcasts on response scale
 #' hc <- hindcast(mod)
 #' str(hc)
+#'
+#' # Use summary() to extract hindcasts / forecasts for custom plotting
+#' head(summary(hc), 12)
+#'
+#' # Or just use the plot() function for quick plots
 #' plot(hc, series = 1)
 #' plot(hc, series = 2)
 #' plot(hc, series = 3)
@@ -47,6 +50,7 @@ forecast <- function(object, ...) {
 #' fc <- forecast(mod,
 #'                newdata = simdat$data_test)
 #' str(fc)
+#' head(summary(fc), 12)
 #' plot(fc, series = 1)
 #' plot(fc, series = 2)
 #' plot(fc, series = 3)
@@ -55,6 +59,7 @@ forecast <- function(object, ...) {
 #' fc <- forecast(mod,
 #'                newdata = simdat$data_test,
 #'                type = 'expected')
+#' head(summary(fc), 12)
 #' plot(fc, series = 1)
 #' plot(fc, series = 2)
 #' plot(fc, series = 3)
@@ -63,6 +68,7 @@ forecast <- function(object, ...) {
 #' fc <- forecast(mod,
 #'                newdata = simdat$data_test,
 #'                type = 'trend')
+#' head(summary(fc), 12)
 #' plot(fc, series = 1)
 #' plot(fc, series = 2)
 #' plot(fc, series = 3)
@@ -183,6 +189,7 @@ forecast.mvgam = function(
     } else {
       data_test <- data_test[idx, ]
     }
+    object$test_data <- data_test
   }
 
   # Only compute forecasts if they don't already exist!
@@ -709,6 +716,31 @@ forecast.mvgam = function(
     names(series_test) <- levels(data_train$series)
   }
 
+  series_train_times <- lapply(seq_len(n_series), function(series) {
+    s_name <- levels(object$obs_data$series)[series]
+    data.frame(
+      series = object$obs_data$series,
+      time = object$obs_data$time,
+      y = object$obs_data$y
+    ) %>%
+      dplyr::filter(series == s_name) %>%
+      dplyr::arrange(time) %>%
+      dplyr::pull(time)
+  })
+  names(series_train_times) <- levels(data_train$series)
+
+  series_test_times <- lapply(seq_len(n_series), function(series) {
+    s_name <- levels(object$obs_data$series)[series]
+    data.frame(
+      series = data_test$series,
+      time = data_test$time
+    ) %>%
+      dplyr::filter(series == s_name) %>%
+      dplyr::arrange(time) %>%
+      dplyr::pull(time)
+  })
+  names(series_test_times) <- levels(data_train$series)
+
   series_fcs <- structure(
     list(
       call = object$call,
@@ -729,9 +761,9 @@ forecast.mvgam = function(
         levels = levels(data_train$series)
       ),
       train_observations = series_obs,
-      train_times = unique(data_train$index..time..index),
+      train_times = series_train_times,
       test_observations = series_test,
-      test_times = unique(data_test$index..time..index),
+      test_times = series_test_times,
       hindcasts = series_hcs,
       forecasts = series_fcs
     ),

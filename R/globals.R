@@ -121,6 +121,11 @@ utils::globalVariables(c(
   "irf_median",
   "irf_Qlower",
   "irf_Qupper",
+  "fevdQ50",
+  "parameter",
+  "pred_median",
+  "pred_Qupper",
+  "pred_Qlower",
   "lower_deriv",
   "med_deriv",
   "upper_deriv",
@@ -131,5 +136,7 @@ utils::globalVariables(c(
   "lv",
   "correlation",
   "Factor",
-  "contribution"
+  "contribution",
+  "unit",
+  "lw"
 ))

@@ -100,7 +100,7 @@ source of error; similarly to what is estimated by \code{\link[mgcv]{gam}})
 \item \code{'AR1'} or \code{AR(p = 1)}
 \item \code{'AR2'} or \code{AR(p = 2)}
 \item \code{'AR3'} or \code{AR(p = 3)}
-\item \code{'CAR1'} or \code{CAR(p = 1)}
+\item \code{'CAR1'} or \code{CAR(p = 1)} (also known as an Ornstein–Uhlenbeck process)
 \item \code{'VAR1'}  or \code{VAR()}(only available in \code{Stan})
 \item \verb{'PWlogistic}, \code{'PWlinear'} or \code{PW()} (only available in \code{Stan})
 \item \code{'GP'} or \code{GP()} (Gaussian Process with squared exponential kernel;
@@ -111,7 +111,7 @@ average and/or correlated process error terms can also be estimated (for
 example, \code{RW(cor = TRUE)} will set up a multivariate Random Walk if \code{n_series > 1}).
 It is also possible for many multivariate trends to estimate hierarchical
 correlations if the data are structured among levels of a relevant grouping
-factor. See \link{mvgam_trends} for more details and see \link{ZMVN} for an example.}
+factor. See \link{mvgam_trends} for more details and see \code{\link[=ZMVN]{ZMVN()}} for an example.}
 
 \item{noncentred}{\code{logical} Use the non-centred parameterisation for autoregressive
 trend models? Setting to \code{TRUE} will reparameterise the model to avoid possible
@@ -179,7 +179,7 @@ use irregularly spaced intervals if using \code{trend_model = CAR(1)}, though
 note that any
 temporal intervals that are exactly \code{0} will be adjusted to a very small number
 (\code{1e-12}) to prevent sampling errors. See an example of \code{CAR()} trends in
-\code{\link{CAR}}
+\code{\link[=CAR]{CAR()}}
 }
 Note however that there are special cases where these identifiers are not
 needed. For
@@ -187,7 +187,7 @@ example, models with hierarchical temporal correlation processes (e.g.
 \code{AR(gr = region, subgr = species)})
 should NOT include a \code{series} identifier, as this will be constructed
 internally (see
-\code{\link{mvgam_trends}} and \code{\link{AR}} for details). \code{mvgam} can also
+\code{\link{mvgam_trends}} and \code{\link[=AR]{AR()}} for details). \code{mvgam()} can also
 fit models that do not
 include a \code{time} variable if there are no temporal dynamic structures included
 (i.e. \code{trend_model = 'None'} or
@@ -204,7 +204,8 @@ simulations can be obtained}
 
 \item{use_lv}{\code{logical}. If \code{TRUE}, use dynamic factors to estimate series'
 latent trends in a reduced dimension format. Only available for
-\code{RW()}, \code{AR()} and \code{GP()} trend models. Defaults to \code{FALSE}}
+\code{RW()}, \code{AR()} and \code{GP()} trend models. Defaults to \code{FALSE}. See
+\code{\link{lv_correlations}} for a worked example}
 
 \item{n_lv}{\code{integer} the number of latent dynamic factors to use if
 \code{use_lv == TRUE}. Cannot be \code{> n_series}. Defaults arbitrarily to
@@ -220,13 +221,13 @@ trend each series should depend on. The \code{series} column should have a singl
 unique entry for each series in the data (names should perfectly match factor
 levels of the \code{series} variable in \code{data}). Note that if this is supplied,
 the intercept parameter in the process model will NOT be automatically suppressed.
-Not yet supported for models in wich the latent factors evolve in continuous time (\code{CAR()}).
+Not yet supported for models in which the latent factors evolve in continuous time (\code{CAR()}).
 See examples for details}
 
 \item{priors}{An optional \code{data.frame} with prior
 definitions or, preferentially, a vector containing
-objects of class \code{brmsprior} (see. \code{\link[brms]{prior}} for details).
-See \link{get_mvgam_priors} and Details' for more information on changing default prior distributions}
+objects of class \code{brmsprior} (see. \code{\link[brms]{prior}()} for details).
+See \code{\link[=get_mvgam_priors]{get_mvgam_priors()}} and Details' for more information on changing default prior distributions}
 
 \item{run_model}{\code{logical}. If \code{FALSE}, the model is not fitted but
 instead the function will
@@ -247,7 +248,7 @@ is needed to fit the
 model is returned, along with the initial values for smooth and AR parameters,
 once the model is fitted.
 This will be helpful if users wish to modify the model file to add
-other stochastic elements that are not currently available in \code{mvgam}.
+other stochastic elements that are not currently available in \pkg{mvgam}.
 Default is \code{FALSE} to reduce
 the size of the returned object, unless \code{run_model == FALSE}}
 
@@ -310,7 +311,7 @@ can also set open_progress = FALSE to prevent opening additional progress bars.}
 \item{autoformat}{\code{Logical}. Use the \code{stanc} parser to automatically format the
 \code{Stan} code and check for deprecations. Only for development purposes, so leave to \code{TRUE}}
 
-\item{refit}{Logical indicating whether this is a refit, called using \link{update.mvgam}. Users should leave
+\item{refit}{Logical indicating whether this is a refit, called using \code{\link[=update.mvgam]{update.mvgam()}}. Users should leave
 as \code{FALSE}}
 
 \item{lfo}{Logical indicating whether this is part of a call to \link{lfo_cv.mvgam}. Returns a
@@ -320,7 +321,7 @@ leave this set as \code{FALSE}}
 
 \item{...}{Further arguments passed to Stan.
 For \code{backend = "rstan"} the arguments are passed to
-\code{\link[rstan]{sampling}} or \code{\link[rstan]{vb}}.
+\code{\link[rstan]{sampling}()} or \code{\link[rstan]{vb}()}.
 For \code{backend = "cmdstanr"} the arguments are passed to the
 \code{cmdstanr::sample}, \code{cmdstanr::variational},
 \code{cmdstanr::laplace} or
@@ -376,7 +377,7 @@ can be found in \code{\link{mvgam_trends}}.
 \emph{Priors}: Default priors for intercepts and any variance parameters are chosen
 to be vaguely informative, but these should always be checked by the user.
 Prior distributions for most important model parameters can be altered
-(see \code{\link{get_mvgam_priors}} for details).
+(see \code{\link[=get_mvgam_priors]{get_mvgam_priors()}} for details).
 Note that latent trends are estimated on the link scale so choose priors
 accordingly. However more control over the model specification can be accomplished
 by setting \code{run_model = FALSE} and then editing the model code (
@@ -430,41 +431,41 @@ the \href{https://nicholasjclark.github.io/mvgam/articles/mvgam_overview.html}{g
 the \href{https://nicholasjclark.github.io/mvgam/articles/shared_states.html}{shared latent states vignette},
 the \href{https://nicholasjclark.github.io/mvgam/articles/time_varying_effects.html}{time-varying effects vignette} and
 the \href{https://nicholasjclark.github.io/mvgam/articles/trend_formulas.html}{State-Space models vignette} all provide
-useful information about how to structure, fit and interrogate Dynamic Generalized Additive Models in \code{mvgam}. Some
+useful information about how to structure, fit and interrogate Dynamic Generalized Additive Models in \pkg{mvgam}. Some
 more specialized how-to articles include
 \href{https://nicholasjclark.github.io/mvgam/articles/nmixtures.html}{"Fitting N-mixture models in \code{mgam}},
 \href{https://nicholasjclark.github.io/mvgam/reference/jsdgam.html}{"Joint Species Distribution Models in \code{mgam}},
 \href{https://ecogambler.netlify.app/blog/time-varying-seasonality/}{"Incorporating time-varying seasonality in forecast models"}
 and \href{https://ecogambler.netlify.app/blog/autocorrelated-gams/}{"Temporal autocorrelation in GAMs and the \code{mvgam} package"}
-\item 3. Carefully think about how to structure linear predictor effects (i.e. smooth terms using \code{\link[mgcv]{s}},
-\code{\link[mgcv]{te}} or \code{\link[mgcv]{ti}}, GPs using \code{\link[brms]{gp}}, dynamic time-varying effects using \code{\link{dynamic}}, and parametric terms), latent temporal trend components (see \code{\link{mvgam_trends}}) and the appropriate
-observation family (see \code{\link{mvgam_families}}). Use \code{\link{get_mvgam_priors}} to see default prior distributions
+\item 3. Carefully think about how to structure linear predictor effects (i.e. smooth terms using \code{\link[mgcv]{s}()},
+\code{\link[mgcv]{te}()} or \code{\link[mgcv]{ti}()}, GPs using \code{\link[brms]{gp}()}, dynamic time-varying effects using \code{\link[=dynamic]{dynamic()}}, and parametric terms), latent temporal trend components (see \code{\link{mvgam_trends}}) and the appropriate
+observation family (see \code{\link{mvgam_families}}). Use \code{\link[=get_mvgam_priors]{get_mvgam_priors()}} to see default prior distributions
 for stochastic parameters
-\item 4. Change default priors using appropriate prior knowledge (see \code{\link[brms]{prior}}). When using State-Space models
+\item 4. Change default priors using appropriate prior knowledge (see \code{\link[brms]{prior}()}). When using State-Space models
 with a \code{trend_formula}, pay particular attention to priors for any variance parameters such as process errors and observation
 errors. Default priors on these parameters are chosen to be vaguely informative and to avoid
 zero (using Inverse Gamma priors), but more informative priors will often help with
 model efficiency and convergence
 \item 5. Fit the model using either Hamiltonian Monte Carlo or an approximation algorithm (i.e.
-change the \code{backend} argument) and use \code{\link{summary.mvgam}}, \code{\link{conditional_effects.mvgam}},
-\code{\link{mcmc_plot.mvgam}}, \code{\link{pp_check.mvgam}}, \code{\link{pairs.mvgam}} and
-\code{\link{plot.mvgam}} to inspect / interrogate the model
-\item 6. Update the model as needed and use \code{\link{loo_compare.mvgam}} for in-sample model comparisons,
-or alternatively use \code{\link{forecast.mvgam}}, \code{\link{lfo_cv.mvgam}} and
-\code{\link{score.mvgam_forecast}} to compare models based on out-of-sample forecasts
+change the \code{backend} argument) and use \code{\link[=summary.mvgam]{summary.mvgam()}}, \code{\link[=conditional_effects.mvgam]{conditional_effects.mvgam()}},
+\code{\link[=mcmc_plot.mvgam]{mcmc_plot.mvgam()}}, \code{\link[=pp_check.mvgam]{pp_check.mvgam()}}, \code{\link[=pairs.mvgam]{pairs.mvgam()}} and
+\code{\link[=plot.mvgam]{plot.mvgam()}} to inspect / interrogate the model
+\item 6. Update the model as needed and use \code{\link[=loo_compare.mvgam]{loo_compare.mvgam()}} for in-sample model comparisons,
+or alternatively use \code{\link[=forecast.mvgam]{forecast.mvgam()}}, \code{\link[=lfo_cv.mvgam]{lfo_cv.mvgam()}} and
+\code{\link[=score.mvgam_forecast]{score.mvgam_forecast()}} to compare models based on out-of-sample forecasts
 (see the \href{https://nicholasjclark.github.io/mvgam/articles/forecast_evaluation.html}{forecast evaluation vignette}
 for guidance)
-\item 7. When satisfied with the model structure, use \code{\link{predict.mvgam}},
-\code{\link[marginaleffects]{plot_predictions}} and/or \code{\link[marginaleffects]{plot_slopes}} for
+\item 7. When satisfied with the model structure, use \code{\link[=predict.mvgam]{predict.mvgam()}},
+\code{\link[marginaleffects]{plot_predictions}()} and/or \code{\link[marginaleffects]{plot_slopes}()} for
 more targeted inferences (see \href{https://ecogambler.netlify.app/blog/interpreting-gams/}{"How to interpret and report nonlinear effects from Generalized Additive Models"} for some guidance on interpreting GAMs)
-\item 8. Use \code{\link{how_to_cite}} to obtain a scaffold methods section (with full references) to begin describing this
+\item 8. Use \code{\link[=how_to_cite]{how_to_cite()}} to obtain a scaffold methods section (with full references) to begin describing this
 model in scientific publications
 }
 }
 \examples{
 \donttest{
-# Simulate a collection of three time series that have shared seasonal dynamics
-# and independent AR1 trends, with a Poisson observation process
+# Simulate three time series that have shared seasonal dynamics,
+# independent AR(1) trends, and Poisson observations
 set.seed(0)
 dat <- sim_mvgam(
   T = 80,
@@ -530,6 +531,8 @@ augment(mod1)
 # Compute the forecast using covariate information in data_test
 fc <- forecast(mod1, newdata = dat$data_test)
 str(fc)
+fc_summary <- summary(fc)
+head(fc_summary, 12)
 plot(fc)
 
 # Plot the estimated seasonal smooth function
@@ -563,6 +566,96 @@ loo(mod1)
 options(mc.cores = mc.cores.def)
 
 
+
+# Fit a model to the portal time series that uses a latent
+# Vector Autoregression of order 1
+mod <- mvgam(
+  formula = captures ~ -1,
+  trend_formula = ~ trend,
+  trend_model = VAR(cor = TRUE),
+  family = poisson(),
+  data = portal_data,
+  chains = 2,
+  silent = 2
+)
+
+# Plot the autoregressive coefficient distributions;
+# use 'dir = "v"' to arrange the order of facets
+# correctly
+mcmc_plot(
+  mod,
+  variable = 'A',
+  regex = TRUE,
+  type = 'hist',
+  facet_args = list(dir = 'v')
+)
+
+# Plot the process error variance-covariance matrix in the same way;
+mcmc_plot(
+  mod,
+  variable = 'Sigma',
+  regex = TRUE,
+  type = 'hist',
+  facet_args = list(dir = 'v')
+)
+
+# Calulate Generalized IRFs for each series
+irfs <- irf(
+  mod,
+  h = 12,
+  cumulative = FALSE
+)
+
+# Plot some of them
+plot(irfs, series = 1)
+plot(irfs, series = 2)
+
+# Calulate forecast error variance decompositions for each series
+fevds <- fevd(mod, h = 12)
+
+# Plot median contributions to forecast error variance
+plot(fevds)
+
+
+# Now fit a model that uses two RW dynamic factors to model
+# the temporal dynamics of the four rodent species
+mod <- mvgam(
+  captures ~ series,
+  trend_model = RW(),
+  use_lv = TRUE,
+  n_lv = 2,
+  data = portal_data,
+  chains = 2,
+  silent = 2
+)
+
+# Plot the factors
+plot(mod, type = 'factors')
+
+# Plot the hindcasts
+hcs <- hindcast(mod)
+plot(hcs,
+     series = 1)
+plot(hcs,
+     series = 2)
+plot(hcs,
+     series = 3)
+plot(hcs,
+     series = 4)
+
+# Use residual_cor() to calculate temporal correlations among the series
+# based on the factor loadings
+lvcors <- residual_cor(mod)
+names(lvcors)
+lvcors$cor
+
+# For those correlations whose credible intervals did not include
+# zero, plot them as a correlation matrix (all other correlations
+# are shown as zero on this plot)
+plot(lvcors, cluster = TRUE)
+
+
+
 # Example of supplying a trend_map so that some series can share
 # latent trend processes
 sim <- sim_mvgam(n_series = 3)
@@ -588,9 +681,9 @@ mod <- mvgam(
 
 # The mapping matrix is now supplied as data to the model in the 'Z' element
 mod$model_data$Z
-code(mod)
 
 # The first two series share an identical latent trend; the third is different
+plot(residual_cor(mod))
 plot(mod, type = "trend", series = 1)
 plot(mod, type = "trend", series = 2)
 plot(mod, type = "trend", series = 3)
@@ -621,10 +714,11 @@ data <- data.frame(out, temp, time = seq_along(temp))
 data_train <- data[1:180, ]
 data_test <- data[181:200, ]
 
-# Fit the model using the dynamic() formula helper
+# Fit the model using the dynamic() function
 mod <- mvgam(
   formula =
-    out ~ dynamic(temp,
+    out ~ dynamic(
+      temp,
       scale = FALSE,
       k = 40
     ),
@@ -673,14 +767,12 @@ mod <- mvgam(
 
 # Inspect the model file to see the modification to the linear predictor
 # (eta)
-code(mod)
+stancode(mod)
 
 # Forecasts for the first two series will differ in magnitude
 fc <- forecast(mod, newdata = dat$data_test)
-layout(matrix(1:2, ncol = 2))
 plot(fc, series = 1, ylim = c(0, 75))
 plot(fc, series = 2, ylim = c(0, 75))
-layout(1)
 
 # Changing the offset for the testing data should lead to changes in
 # the forecast
@@ -766,6 +858,22 @@ pp_check(mod,
   group = "series", ndraws = 50
 )
 conditional_effects(mod, type = "link")
+
+# To view predictions on the probability scale,
+# use ntrials = 1 in datagrid()
+plot_predictions(
+  mod,
+  by = c('x', 'series'),
+  newdata = datagrid(x = runif(100, -2, 2),
+                    series = unique,
+                    ntrials = 1),
+  type = 'expected'
+)
+
+\dontshow{
+# For R CMD check: make sure any open connections are closed afterward
+ closeAllConnections()
+}
 }
 }
 \references{
@@ -779,8 +887,8 @@ multispecies forecasts to navigate the dynamics of ecological predictability. Pe
 13:e18929 https://doi.org/10.7717/peerj.18929
 }
 \seealso{
-\code{\link[mgcv]{jagam}}, \code{\link[mgcv]{gam}}, \code{\link[mgcv]{gam.models}},
-\code{\link{get_mvgam_priors}}, \code{\link{jsdgam}}
+\code{\link[mgcv]{jagam}()}, \code{\link[mgcv]{gam}()}, \code{\link[mgcv]{gam.models}},
+\code{\link[=get_mvgam_priors]{get_mvgam_priors()}}, \code{\link[=jsdgam]{jsdgam()}}
 }
 \author{
 Nicholas J Clark

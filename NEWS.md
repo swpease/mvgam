@@ -1,4 +1,25 @@
-# mvgam (development version)
+# mvgam development version
+
+## New functionalities
+* Added a new function `ordinate.jsdgam()` to plot two-dimensional ordinations of site and species scores from latent factor models estimated in `jsdgam()`
+* `residual_cor()` now supports models fitted with `mvgam()` in which latent factors were used or in which correlated dynamic processes were used
+* Added a `summary.mvgam_forecast()` function to compute and return prediction intervals of posterior hindcasts and forecasts in a `data.frame` format. This will make it easier for users to create their own custom plots of hindcast and forecast distributions (#108)
+
+## Changing defaults
+* The `forecast()` method is now imported from 'generics' to help avoid conflict issues with other forecasting packages
+* Deprecated the `incl_dynamics` argument in the `loo()` and `loo_compare()` functions to ensure better consistency in log-likelihood and resulting LOO estimates from models with different observation families
+* Changed default `type` in `conditional_effects()` to `expected` to match behaviour of 'brms'
+
+## Bug fixes
+* Bug fix to ensure forecast scores are properly computed when plotting objects of class `mvgam_forecast` if only a single out-of-sample observation was included in `newdata` (#111)
+* Bug fix to ensure offsets supplied with `offset(...)` in formulae are correctly incorporated when using `gp()` terms
+* Bug fix to ensure piecewise trends are correctly predicted when using `process_error = TRUE` in `predict()`
+* Bug fix to ensure variance of continuous time autoregressive processes (using `CAR()`) scales appropriately with time lags (#107)
+
+## Deprecations
+* Altered the structure of objects of class `mvgam_forecast` so that the `train_times` and `test_times` slots now contain lists of length `n_series`. This allows for continuous time data to be better handled, where some series may have been sampled at different timepoints
+
+# mvgam 1.1.51
 
 ## New functionalities
 * Changed default priors for scale parameters (i.e. process errors "sigma" and observation errors "sigma_obs") to inverse gammas to provide more sensible prior regularisation away from zero

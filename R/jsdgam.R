@@ -106,6 +106,48 @@
 #'Use `methods(class = "mvgam")` for an overview on available methods
 #'@examples
 #'\donttest{
+#' # Fit a JSDGAM to the portal_data captures
+#' mod <- jsdgam(
+#'   formula = captures ~
+#'     # Fixed effects of NDVI and mintemp, row effect as a GP of time
+#'     ndvi_ma12:series + mintemp:series + gp(time, k = 15),
+#'   factor_formula = ~ -1,
+#'   data = portal_data,
+#'   unit = time,
+#'   species = series,
+#'   family = poisson(),
+#'   n_lv = 2,
+#'   silent = 2,
+#'   chains = 2
+#' )
+#'
+#' # Plot covariate effects
+#' library(ggplot2); theme_set(theme_bw())
+#' plot_predictions(
+#'  mod,
+#'  condition = c('ndvi_ma12','series', 'series')
+#' )
+#'
+#' plot_predictions(
+#'  mod,
+#'  condition = c('mintemp','series', 'series')
+#' )
+#'
+#' # A residual correlation plot
+#' plot(
+#'   residual_cor(mod)
+#' )
+#'
+#' # An ordination biplot can also be constructed
+#' # from the factor scores and their loadings
+#' if(requireNamespace('ggrepel', quietly = TRUE)){
+#'   ordinate(mod, alpha = 0.7)
+#' }
+#'
+#'
+#' # A more complicated example showing how to include predictors
+#' # in the factor_formula
+#'
 #' # Simulate latent count data for 500 spatial locations and 10 species
 #' set.seed(0)
 #' N_points <- 500
@@ -190,7 +232,6 @@
 #'   dplyr::group_by(lat, lon) -> dat
 #'
 #' # View the count distributions for each species
-#' library(ggplot2); theme_set(theme_bw())
 #' ggplot(dat, aes(x = count)) +
 #'   geom_histogram() +
 #'   facet_wrap(~ species, scales = 'free')
@@ -233,7 +274,7 @@
 #'               n_lv = 3,
 #'
 #'               # Change default priors for fixed random effect variances and
-#'               # factor P marginal deviations to standard normal
+#'               # factor GP marginal deviations to standard normal
 #'               priors = c(prior(std_normal(),
 #'                                class = sigma_raw),
 #'                          prior(std_normal(),
@@ -253,7 +294,7 @@
 #'               chains = 2,
 #'               silent = 2)
 #'
-#' # Plot species-level intercept estimates
+#' # Plot the implicit species-level intercept estimates
 #' plot_predictions(mod, condition = 'species',
 #'                  type = 'link')
 #'
@@ -286,10 +327,16 @@
 #' post_cors$cor[1:5, 1:5]
 #' post_cors$cor_upper[1:5, 1:5]
 #' post_cors$cor_lower[1:5, 1:5]
-
+#'
 #' # Plot of the posterior median correlations for those estimated
 #' # to be non-zero
-#' plot(post_cors)
+#' plot(post_cors, cluster = TRUE)
+#'
+#' # An ordination biplot can also be constructed
+#' # from the factor scores and their loadings
+#' if(requireNamespace('ggrepel', quietly = TRUE)){
+#'   ordinate(mod)
+#' }
 #'
 #' # Posterior predictive checks and ELPD-LOO can ascertain model fit
 #' pp_check(mod,
@@ -303,12 +350,12 @@
 #' # note this calculation takes a few minutes because of the need to calculate
 #' # draws from the stochastic latent factors
 #' newdata <- st_process %>%
-#'                    dplyr::mutate(species = factor(species,
-#'                                                   levels = paste0('species_',
-#'                                                                   1:N_species))) %>%
-#'                    dplyr::group_by(lat, lon) %>%
-#'                    dplyr::mutate(site = dplyr::cur_group_id()) %>%
-#'                    dplyr::ungroup()
+#'  dplyr::mutate(species = factor(species,
+#'                                 levels = paste0('species_',
+#'                                                 1:N_species))) %>%
+#'  dplyr::group_by(lat, lon) %>%
+#'  dplyr::mutate(site = dplyr::cur_group_id()) %>%
+#'  dplyr::ungroup()
 #' preds <- predict(mod, newdata = newdata)
 #'
 #' # Plot the median log(count) predictions on a grid
@@ -318,6 +365,11 @@
 #'   facet_wrap(~ species, scales = 'free') +
 #'   scale_color_viridis_c() +
 #'   theme_classic()
+#'
+#' \dontshow{
+#' # For R CMD check: make sure any open connections are closed afterward
+#'  closeAllConnections()
+#' }
 #'}
 #'@export
 jsdgam = function(
@@ -366,7 +418,7 @@ jsdgam = function(
 
   # Set up the model structure but leave autoformat off so that the
   # model file can be easily modified
-  mod <- mvgam(
+  mod <- suppressWarnings(mvgam(
     formula = formula,
     trend_formula = factor_formula,
     knots = knots,
@@ -382,7 +434,7 @@ jsdgam = function(
     autoformat = FALSE,
     backend = backend,
     ...
-  )
+  ))
   model_file <- mod$model_file
 
   #### Modify model data and model file ####
@@ -451,31 +503,61 @@ jsdgam = function(
   )
   ends <- starts + 5
   model_file <- model_file[-(starts:ends)]
-  model_file[grep(
-    "// latent process linear predictors",
-    model_file,
-    fixed = TRUE
-  )] <- paste0(
-    "// latent process linear predictors\n",
-    "trend_mus = X_trend * b_trend;\n\n",
-    "// constraints allow identifiability of loadings\n",
-    "{\n",
-    "int idx;\n",
-    "idx = 0;\n",
-    "for(j in 1 : n_lv) lv_coefs[j, j] = L_diag[j];\n",
-    "for(j in 1 : n_lv) {\n",
-    "for(k in (j + 1) : n_series) {\n",
-    "idx = idx + 1;\n",
-    "lv_coefs[k, j] = L_lower[idx];\n",
-    "}\n",
-    "}\n",
-    "}\n\n",
-    "// raw latent factors (with linear predictors)\n",
-    "for (j in 1 : n_lv) {\n",
-    "for (i in 1 : n) {\n",
-    "LV[i, j] = trend_mus[ytimes_trend[i, j]] + LV_raw[i, j];\n",
-    "}\n}\n"
-  )
+
+  # Simplified latent variable creation if no terms in factor_formula
+  if (
+    is.null(rownames(attr(terms.formula(factor_formula), 'factors'))) &
+      is.null(colnames(attr(terms.formula(factor_formula), 'factors')))
+  ) {
+    model_file[grep(
+      "// latent process linear predictors",
+      model_file,
+      fixed = TRUE
+    )] <- paste0(
+      "// latent process linear predictors\n",
+      "trend_mus = X_trend * b_trend;\n\n",
+      "// constraints allow identifiability of loadings\n",
+      "{\n",
+      "int idx;\n",
+      "idx = 0;\n",
+      "for(j in 1 : n_lv) lv_coefs[j, j] = L_diag[j];\n",
+      "for(j in 1 : n_lv) {\n",
+      "for(k in (j + 1) : n_series) {\n",
+      "idx = idx + 1;\n",
+      "lv_coefs[k, j] = L_lower[idx];\n",
+      "}\n",
+      "}\n",
+      "}\n\n",
+      "// raw latent factors\n",
+      "LV = LV_raw;\n"
+    )
+  } else {
+    model_file[grep(
+      "// latent process linear predictors",
+      model_file,
+      fixed = TRUE
+    )] <- paste0(
+      "// latent process linear predictors\n",
+      "trend_mus = X_trend * b_trend;\n\n",
+      "// constraints allow identifiability of loadings\n",
+      "{\n",
+      "int idx;\n",
+      "idx = 0;\n",
+      "for(j in 1 : n_lv) lv_coefs[j, j] = L_diag[j];\n",
+      "for(j in 1 : n_lv) {\n",
+      "for(k in (j + 1) : n_series) {\n",
+      "idx = idx + 1;\n",
+      "lv_coefs[k, j] = L_lower[idx];\n",
+      "}\n",
+      "}\n",
+      "}\n\n",
+      "// raw latent factors (with linear predictors)\n",
+      "for (j in 1 : n_lv) {\n",
+      "for (i in 1 : n) {\n",
+      "LV[i, j] = trend_mus[ytimes_trend[i, j]] + LV_raw[i, j];\n",
+      "}\n}\n"
+    )
+  }
 
   model_file <- model_file[
     -grep("// derived latent states", model_file, fixed = TRUE)
@@ -490,16 +572,32 @@ jsdgam = function(
   ) +
     1
   model_file <- model_file[-sigma_prior]
-  model_file[grep(
-    "// priors for latent state SD parameters",
-    model_file,
-    fixed = TRUE
-  )] <- paste0(
-    "// priors for factors and loading coefficients\n",
-    "L_lower ~ student_t(3, 0, 1);\n",
-    "L_diag ~ student_t(3, 0, 1);"
-  )
-  model_file <- readLines(textConnection(model_file), n = -1)
+
+  # Use standard normal for loadings in most models, apart from
+  # those using identify link
+  if (family_links(mod$family) != 'identity') {
+    model_file[grep(
+      "// priors for latent state SD parameters",
+      model_file,
+      fixed = TRUE
+    )] <- paste0(
+      "// priors for factors and loading coefficients\n",
+      "L_lower ~ std_normal();\n",
+      "L_diag ~ std_normal();"
+    )
+    model_file <- readLines(textConnection(model_file), n = -1)
+  } else {
+    model_file[grep(
+      "// priors for latent state SD parameters",
+      model_file,
+      fixed = TRUE
+    )] <- paste0(
+      "// priors for factors and loading coefficients\n",
+      "L_lower ~ student_t(3, 0, 1);\n",
+      "L_diag ~ student_t(3, 0, 1);"
+    )
+    model_file <- readLines(textConnection(model_file), n = -1)
+  }
 
   # Update generated quantities
   model_file[grep(

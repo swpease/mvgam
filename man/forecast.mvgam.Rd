@@ -2,17 +2,12 @@
 % Please edit documentation in R/forecast.mvgam.R
 \name{forecast.mvgam}
 \alias{forecast.mvgam}
-\alias{forecast}
 \title{Extract or compute hindcasts and forecasts for a fitted \code{mvgam} object}
 \usage{
-forecast(object, ...)
-
 \method{forecast}{mvgam}(object, newdata, data_test, n_cores = 1, type = "response", ...)
 }
 \arguments{
 \item{object}{\code{list} object of class \code{mvgam} or \code{jsdgam}. See \code{\link[=mvgam]{mvgam()}}}
-
-\item{...}{Ignored}
 
 \item{newdata}{Optional \code{dataframe} or \code{list} of test data containing the same variables
 that were included in the original \code{data} used to fit the model. If included, the
@@ -43,6 +38,8 @@ Two special cases are also allowed:
 type \code{latent_N} will return the estimated latent abundances from an
 N-mixture distribution, while type \code{detection} will return the estimated
 detection probability from an N-mixture distribution}
+
+\item{...}{Ignored}
 }
 \value{
 An object of class \code{mvgam_forecast} containing hindcast and forecast distributions.
@@ -67,6 +64,11 @@ mod <- mvgam(y ~ s(season, bs = 'cc', k = 6),
 # Hindcasts on response scale
 hc <- hindcast(mod)
 str(hc)
+
+# Use summary() to extract hindcasts / forecasts for custom plotting
+head(summary(hc), 12)
+
+# Or just use the plot() function for quick plots
 plot(hc, series = 1)
 plot(hc, series = 2)
 plot(hc, series = 3)
@@ -75,6 +77,7 @@ plot(hc, series = 3)
 fc <- forecast(mod,
                newdata = simdat$data_test)
 str(fc)
+head(summary(fc), 12)
 plot(fc, series = 1)
 plot(fc, series = 2)
 plot(fc, series = 3)
@@ -83,6 +86,7 @@ plot(fc, series = 3)
 fc <- forecast(mod,
                newdata = simdat$data_test,
                type = 'expected')
+head(summary(fc), 12)
 plot(fc, series = 1)
 plot(fc, series = 2)
 plot(fc, series = 3)
@@ -91,6 +95,7 @@ plot(fc, series = 3)
 fc <- forecast(mod,
                newdata = simdat$data_test,
                type = 'trend')
+head(summary(fc), 12)
 plot(fc, series = 1)
 plot(fc, series = 2)
 plot(fc, series = 3)

@@ -6,32 +6,15 @@
 #' @name fevd.mvgam
 #' @param object \code{list} object of class \code{mvgam} resulting from a call to [mvgam()]
 #' that used a Vector Autoregressive latent process model (either as `VAR(cor = FALSE)` or
-#' `VAR(cor = TRUE)`)
+#' `VAR(cor = TRUE)`; see [VAR()] for details)
 #' @param h Positive \code{integer} specifying the forecast horizon over which to calculate
 #' the IRF
 #' @param ... ignored
-#' @details A forecast error variance decomposition is useful for quantifying the amount
-#' of information each series that in a Vector Autoregression contributes to the forecast
-#' distributions of the other series in the autoregression. This function calculates
-#' the forecast error variance decomposition using the
-#' orthogonalised impulse response coefficient matrices \eqn{\Psi_h}, which can be used to
-#' quantify the contribution of series \eqn{j} to the
-#' h-step forecast error variance of series \eqn{k}:
-#' \deqn{
-#' \sigma_k^2(h) = \sum_{j=1}^K(\psi_{kj, 0}^2 + \ldots + \psi_{kj,
-#' h-1}^2) \quad
-#' }
-#' If the orthogonalised impulse reponses \eqn{(\psi_{kj, 0}^2 + \ldots + \psi_{kj, h-1}^2)}
-#' are divided by the variance of the forecast error \eqn{\sigma_k^2(h)},
-#' this yields an interpretable percentage representing how much of the
-#' forecast error variance for \eqn{k} can be explained by an exogenous shock to \eqn{j}.
-#' @return An object of class \code{mvgam_fevd} containing the posterior forecast error
-#' variance decompositions. This
-#' object can be used with the supplied S3 functions \code{plot}
+#' @return
+#' See \code{\link{mvgam_fevd-class}} for a full description of the quantities that are
+#' computed and returned by this function, along with key references.
 #' @author Nicholas J Clark
-#' @references Lütkepohl, H (2006).
-#' New Introduction to Multiple Time Series Analysis. Springer, New York.
-#' @seealso \code{\link{VAR}}, \code{\link{irf}}, \code{\link{stability}}
+#' @seealso [VAR()], [irf()], [stability()], \code{\link{mvgam_fevd-class}}
 #' @examples
 #' \donttest{
 #' # Simulate some time series that follow a latent VAR(1) process
@@ -44,13 +27,25 @@
 #' plot_mvgam_series(data = simdat$data_train, series = "all")
 #'
 #' # Fit a model that uses a latent VAR(1)
-#' mod <- mvgam(y ~ -1,
-#'   trend_formula = ~1,
+#' mod <- mvgam(
+#'   formula = y ~ -1,
+#'   trend_formula = ~ 1,
 #'   trend_model = VAR(cor = TRUE),
 #'   family = gaussian(),
 #'   data = simdat$data_train,
 #'   chains = 2,
 #'   silent = 2
+#' )
+#'
+#' # Plot the autoregressive coefficient distributions;
+#' # use 'dir = "v"' to arrange the order of facets
+#' # correctly
+#' mcmc_plot(
+#'   mod,
+#'   variable = 'A',
+#'   regex = TRUE,
+#'   type = 'hist',
+#'   facet_args = list(dir = 'v')
 #' )
 #'
 #' # Calulate forecast error variance decompositions for each series
@@ -106,7 +101,7 @@ fevd.mvgam <- function(object, h = 10, ...) {
       p = 1
     )
 
-    # Calculate the IRF
+    # Calculate the FEVD for this draw
     gen_fevd(x, h = h)
   })
   class(all_fevds) <- "mvgam_fevd"

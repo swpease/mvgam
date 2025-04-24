@@ -4,7 +4,7 @@
 
 # mvgam
 
-> **M**ulti**V**ariate (Dynamic) **G**eneralized **A**ddivite **M**odels
+> **M**ulti**V**ariate (Dynamic) **G**eneralized **A**dditive **M**odels
 
 [![R-CMD-check](https://github.com/nicholasjclark/mvgam/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/nicholasjclark/mvgam/actions/)
 [![Coverage
@@ -17,21 +17,33 @@ Version](https://www.r-pkg.org/badges/version/mvgam)](https://cran.r-project.org
 [![CRAN
 Downloads](https://cranlogs.r-pkg.org/badges/grand-total/mvgam?color=brightgreen)](https://cran.r-project.org/package=mvgam)
 
-The goal of the `mvgam` 📦 is to fit Bayesian Dynamic Generalized
-Additive Models (DGAMs) that can include highly flexible nonlinear
-predictor effects for both process and observation components. The
-package does this by relying on functionalities from the impressive
+The `mvgam` 📦 fits Bayesian Dynamic Generalized Additive Models (DGAMs)
+that can include highly flexible nonlinear predictor effects, latent
+variables and multivariate time series models. The package does this by
+relying on functionalities from the impressive
 <a href="https://paulbuerkner.com/brms/"
 target="_blank"><code>brms</code></a> and
 <a href="https://cran.r-project.org/package=mgcv"
-target="_blank"><code>mgcv</code></a> packages. This allows `mvgam` to
-fit a wide range of models, including:
+target="_blank"><code>mgcv</code></a> packages. Parameters are estimated
+using the probabilistic programming language
+[`Stan`](https://mc-stan.org/), giving users access to the most advanced
+Bayesian inference algorithms available. This allows `mvgam` to fit a
+very wide range of models, including:
 
 -   <a
     href="https://nicholasjclark.github.io/mvgam/articles/trend_formulas.html"
-    target="_blank">Multivariate State-Space Time Series models</a>
+    target="_blank">Multivariate State-Space Time Series Models</a>
+-   <a
+    href="https://nicholasjclark.github.io/mvgam/reference/RW.html#ref-examples"
+    target="_blank">Continuous-Time Autoregressive Time Series Models</a>
+-   <a
+    href="https://nicholasjclark.github.io/mvgam/articles/shared_states.html"
+    target="_blank">Shared Signal Time Series Models</a>
+-   <a
+    href="https://nicholasjclark.github.io/mvgam/reference/lv_correlations.html"
+    target="_blank">Dynamic Factor Models</a>
 -   <a href="https://nicholasjclark.github.io/mvgam/articles/nmixtures.html"
-    target="_blank">Hierarchical N-mixture models</a>
+    target="_blank">Hierarchical N-mixture Models</a>
 -   <a href="https://www.youtube.com/watch?v=2POK_FVwCHk"
     target="_blank">Hierarchical Generalized Additive Models</a>
 -   <a href="https://nicholasjclark.github.io/mvgam/reference/jsdgam.html"
@@ -39,13 +51,12 @@ fit a wide range of models, including:
 
 ## Installation
 
-Install the stable version from `CRAN` using:
-`install.packages('mvgam')`, or install the development version from
-`GitHub` using: `devtools::install_github("nicholasjclark/mvgam")`. To
-condition models on observed data, `Stan` must be installed (along with
-either `rstan` and/or `cmdstanr`). Please refer to installation links
-for `Stan` with `rstan`
-<a href="https://mc-stan.org/users/interfaces/rstan"
+You can install the stable package version from `CRAN` using:
+`install.packages('mvgam')`, or install the latest development version
+using: `devtools::install_github("nicholasjclark/mvgam")`. You will also
+need a working version of `Stan` installed (along with either `rstan`
+and/or `cmdstanr`). Please refer to installation links for `Stan` with
+`rstan` <a href="https://mc-stan.org/users/interfaces/rstan"
 target="_blank">here</a>, or for `Stan` with `cmdstandr`
 <a href="https://mc-stan.org/cmdstanr/" target="_blank">here</a>.
 
@@ -57,11 +68,11 @@ cheatsheet](https://github.com/nicholasjclark/mvgam/raw/master/misc/mvgam_cheats
 ## A simple example
 
 We can explore the package’s primary functions using one of it’s
-built-in datasets. Use `plot_mvgam_series()` to inspect features for the
-four time series from
+built-in datasets. Use `plot_mvgam_series()` to inspect features for
+time series from
 <a href="https://portal.weecology.org/" target="_blank">the Portal
-Project</a>, which represent captures of four desert rodent species over
-time (see `?portal_data` for more details)
+Project</a>, which represent counts of baited captures for four desert
+rodent species over time (see `?portal_data` for more details)
 
     data(portal_data)
     plot_mvgam_series(
@@ -70,7 +81,7 @@ time (see `?portal_data` for more details)
       series = 'all'
     )
 
-<img src="man/figures/README-unnamed-chunk-4-1.png" alt="Visualizing the multivariate time series in mvgam" width="100%" />
+<img src="man/figures/README-unnamed-chunk-4-1.png" alt="Visualizing multivariate time series in R using mvgam" width="100%" />
 
     plot_mvgam_series(
       data = portal_data, 
@@ -78,7 +89,7 @@ time (see `?portal_data` for more details)
       series = 1
     )
 
-<img src="man/figures/README-unnamed-chunk-4-2.png" alt="Visualizing the multivariate time series in mvgam" width="100%" />
+<img src="man/figures/README-unnamed-chunk-4-2.png" alt="Visualizing multivariate time series in R using mvgam" width="100%" />
 
     plot_mvgam_series(
       data = portal_data, 
@@ -86,13 +97,12 @@ time (see `?portal_data` for more details)
       series = 4
     )
 
-<img src="man/figures/README-unnamed-chunk-4-3.png" alt="Visualizing the multivariate time series in mvgam" width="100%" />
+<img src="man/figures/README-unnamed-chunk-4-3.png" alt="Visualizing multivariate time series in R using mvgam" width="100%" />
 
-These plots show that the time series are count-responses, with missing
-data, seasonality and temporal autocorrelation all present. These
-features make time series analysis and forecasting very difficult if
-using conventional software and models. But `mvgam` shines in these
-tasks.
+These plots show that the time series are count responses, with missing
+data, many zeroes, seasonality and temporal autocorrelation all present.
+These features make time series analysis and forecasting very difficult
+using conventional software. But `mvgam` shines in these tasks.
 
 For most forecasting exercises, we’ll want to split the data into
 training and testing folds
@@ -135,7 +145,7 @@ outcome follows a Poisson distribution and will condition the model in
       backend = 'cmdstanr'
     )
 
-Using `print()` will return a quick summary of the object:
+Using `print()` returns a quick summary of the object:
 
     mod
     #> GAM observation formula:
@@ -169,8 +179,8 @@ Using `print()` will return a quick summary of the object:
     #> 4 chains, each with iter = 2000; warmup = 1500; thin = 1 
     #> Total post-warmup draws = 2000
 
-Split Rhat and effective sample size diagnostics show good convergence
-of the model estimates
+Split Rhat and Effective Sample Size diagnostics show good convergence
+of model estimates
 
     mcmc_plot(mod, 
               type = 'rhat_hist')
@@ -225,8 +235,8 @@ Or design more targeted plots using `plot_predictions()` from the
 <img src="man/figures/README-unnamed-chunk-14-1.png" alt="Using marginaleffects and mvgam to plot GAM smooth functions in R" width="100%" />
 
 We can also view the model’s posterior predictions for the entire series
-(testing and training). These forecasts can be scored using a range of
-proper scoring rules. See `?score.mvgam_forecast` for more details
+(testing and training). Forecasts can be scored using a range of proper
+scoring rules. See `?score.mvgam_forecast` for more details
 
     fcs <- forecast(mod, 
                     newdata = data_test)
@@ -235,13 +245,13 @@ proper scoring rules. See `?score.mvgam_forecast` for more details
       plot(fcs, series = 3) +
       plot(fcs, series = 4)
     #> Out of sample DRPS:
-    #> 8.40241075
+    #> 8.4879155
     #> Out of sample DRPS:
-    #> 5.37573025
+    #> 5.23837175
     #> Out of sample DRPS:
-    #> 8.498864
+    #> 8.66020725
     #> Out of sample DRPS:
-    #> 3.58905025
+    #> 3.58032425
 
 <img src="man/figures/README-unnamed-chunk-15-1.png" alt="Plotting forecast distributions using mvgam in R" width="100%" />
 
@@ -274,14 +284,14 @@ processes over a horizon of 12 timepoints.
 <img src="man/figures/README-unnamed-chunk-16-2.png" alt="Impulse response functions computed using mvgam in R" width="100%" />
 
 Using the same logic as above, we can inspect forecast error variance
-decompositions (FEVDs) for each process using the `fevd()` function.
-This type of analysis asks how orthogonal shocks to all process in the
-system contribute to the variance of forecast uncertainty for a focal
-process over increasing horizons. In other words, the proportion of the
-forecast variance of each latent time series can be attributed to the
-effects of the other series in the VAR process. FEVDs are useful because
-some shocks may not be expected to cause variations in the short-term
-but may cause longer-term fluctuations
+decompositions (FEVDs) for each process using`fevd()`. This type of
+analysis asks how orthogonal shocks to all process in the system
+contribute to the variance of forecast uncertainty for a focal process
+over increasing horizons. In other words, the proportion of the forecast
+variance of each latent time series can be attributed to the effects of
+the other series in the VAR process. FEVDs are useful because some
+shocks may not be expected to cause variations in the short-term but may
+cause longer-term fluctuations
 
     fevds <- fevd(mod, 
                   h = 12)
@@ -319,7 +329,7 @@ details in scientific communications
     description
 
     #> Methods text skeleton
-    #> We used the R package mvgam (version 1.1.51; Clark & Wells, 2023) to
+    #> We used the R package mvgam (version 1.1.57; Clark & Wells, 2023) to
     #>   construct, fit and interrogate the model. mvgam fits Bayesian
     #>   State-Space models that can include flexible predictor effects in both
     #>   the process and observation components by incorporating functionalities
@@ -390,10 +400,9 @@ type `methods(class = "mvgam")`.
 ## Extended observation families
 
 `mvgam` was originally designed to analyse and forecast non-negative
-integer-valued data. These data are traditionally challenging to analyse
-with existing time-series analysis packages. But further development of
-`mvgam` has resulted in support for a growing number of observation
-families. Currently, the package can handle data for the following:
+integer-valued data. But further development of `mvgam` has resulted in
+support for a growing number of observation families. Currently, the
+package can handle data for the following:
 
 -   `gaussian()` for real-valued data
 -   `student_t()` for heavy-tailed real-valued data
@@ -530,8 +539,9 @@ can also be used to generate all necessary data structures, initial
 value functions and modelling code necessary to fit DGAMs using `Stan`.
 This can be helpful if users wish to make changes to the model to better
 suit their own bespoke research / analysis goals. The
-<a href="https://discourse.mc-stan.org/" target="_blank">Stan
-Discourse</a> is a helpful place to troubleshoot.
+<a href="https://discourse.mc-stan.org/"
+target="_blank"><code>Stan</code> Discourse</a> is a helpful place to
+troubleshoot.
 
 ## Citing `mvgam` and related software
 
@@ -619,4 +629,4 @@ Conduct](https://dplyr.tidyverse.org/CODE_OF_CONDUCT).
 
 ## License
 
-This project is licensed under an `MIT` open source license
+The `mvgam` project is licensed under an `MIT` open source license

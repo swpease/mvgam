@@ -1,28 +1,54 @@
 #'Calculate trend correlations based on latent factor loadings for \pkg{mvgam} models
 #'
-#'This function uses samples of latent trends for each series from a fitted
-#'mvgam model to calculates correlations among series' trends
+#'This function uses factor loadings from a fitted dynamic factor
+#'\code{mvgam} model to calculate temporal correlations among series' trends
 #'
 #'@importFrom stats cov2cor cov
-#'@param object \code{list} object of class \code{mvgam}
+#'@param object \code{list} object of class \code{mvgam} that used latent factors, either
+#'with `use_lv = TRUE` or by supplying a `trend_map`. See [mvgam()] for details and for
+#'an example
 #'@return A \code{list} object containing the mean posterior correlations
 #'and the full array of posterior correlations
+#'@details Although this function will still work, it is now recommended to use
+#'[residual_cor()] to obtain residual correlation information in a more user-friendly
+#'format that allows for a deeper investigation of relationships among the time series.
+#'@seealso [residual_cor()], [plot.mvgam_residcor()]
 #'@examples
 #'\donttest{
-#'simdat <- sim_mvgam()
-#'mod <- mvgam(y ~ s(season, bs = 'cc',
-#'                   k = 6),
+#'# Fit a model that uses two AR(1) dynamic factors to model
+#'# the temporal dynamics of the four rodent species in the portal_data
+#'mod <- mvgam(captures ~ series,
 #'             trend_model = AR(),
 #'             use_lv = TRUE,
 #'             n_lv = 2,
-#'             data = simdat$data_train,
-#'             burnin = 300,
-#'             samples = 300,
+#'             data = portal_data,
 #'             chains = 2,
 #'             silent = 2)
+#'
+#'# Plot the two dynamic factors
+#'plot(mod, type = 'factors')
+#'
+#'# Calculate correlations among the series using lv_correlations()
 #'lvcors <- lv_correlations(mod)
 #'names(lvcors)
 #'lapply(lvcors, class)
+#'
+#'# The above works, but it is now recommended to use the more
+#'# flexible and informative residual_cor() function to
+#'# calculate and work with these correlations
+#'lvcors <- residual_cor(mod)
+#'names(lvcors)
+#'lvcors$cor
+#'
+#'# For those correlations whose credible intervals did not include
+#'# zero, plot them as a correlation matrix (all other correlations
+#'# are shown as zero on this plot)
+#'plot(lvcors, cluster = TRUE)
+#'
+#' \dontshow{
+#' # For R CMD check: make sure any open connections are closed afterward
+#'  closeAllConnections()
+#' }
 #'}
 #'@export
 lv_correlations = function(object) {
