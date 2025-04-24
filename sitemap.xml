@@ -172,7 +172,13 @@
     <loc>https://nicholasjclark.github.io/mvgam/reference/mvgam_marginaleffects.html</loc>
   </url>
   <url>
+    <loc>https://nicholasjclark.github.io/mvgam/reference/mvgam_residcor-class.html</loc>
+  </url>
+  <url>
     <loc>https://nicholasjclark.github.io/mvgam/reference/mvgam_trends.html</loc>
+  </url>
+  <url>
+    <loc>https://nicholasjclark.github.io/mvgam/reference/ordinate.jsdgam.html</loc>
   </url>
   <url>
     <loc>https://nicholasjclark.github.io/mvgam/reference/pairs.mvgam.html</loc>
@@ -277,7 +283,13 @@
     <loc>https://nicholasjclark.github.io/mvgam/reference/summary.mvgam_fevd.html</loc>
   </url>
   <url>
+    <loc>https://nicholasjclark.github.io/mvgam/reference/summary.mvgam_forecast.html</loc>
+  </url>
+  <url>
     <loc>https://nicholasjclark.github.io/mvgam/reference/summary.mvgam_irf.html</loc>
+  </url>
+  <url>
+    <loc>https://nicholasjclark.github.io/mvgam/reference/tidy.mvgam.html</loc>
   </url>
   <url>
     <loc>https://nicholasjclark.github.io/mvgam/reference/update.mvgam.html</loc>

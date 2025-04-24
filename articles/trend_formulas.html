@@ -34,7 +34,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mvgam</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.51</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.57</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -89,7 +89,7 @@
                         <h4 data-toc-skip class="author">Nicholas J
 Clark</h4>
             
-            <h4 data-toc-skip class="date">2025-03-14</h4>
+            <h4 data-toc-skip class="date">2025-04-24</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/nicholasjclark/mvgam/blob/HEAD/vignettes/trend_formulas.Rmd" class="external-link"><code>vignettes/trend_formulas.Rmd</code></a></small>
       <div class="d-none name"><code>trend_formulas.Rmd</code></div>
@@ -183,12 +183,12 @@ downloaded using the following:</p>
 <code class="sourceCode R"><span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">plankton_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Rows: 600</span></span>
 <span><span class="co">#&gt; Columns: 6</span></span>
-<span><span class="co">#&gt; $ year   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 1965, 1965, 1965, 1965, 1965, 1965, 1965, 1965, 1965, 1965, 196…</span></span>
-<span><span class="co">#&gt; $ month  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 5, …</span></span>
-<span><span class="co">#&gt; $ y      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> -0.54241769, -0.34410776, -0.07684901, -1.52243490, -0.49055442…</span></span>
-<span><span class="co">#&gt; $ series <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> Greens, Bluegreens, Diatoms, Unicells, Other.algae, Greens, Blu…</span></span>
-<span><span class="co">#&gt; $ temp   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> -1.2306562, -1.2306562, -1.2306562, -1.2306562, -1.2306562, -1.…</span></span>
-<span><span class="co">#&gt; $ time   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 5, …</span></span></code></pre></div>
+<span><span class="co">#&gt; $ year   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 1965<span style="color: #949494;">, </span>1965<span style="color: #949494;">, </span>1965<span style="color: #949494;">, </span>1965<span style="color: #949494;">, </span>1965<span style="color: #949494;">, </span>1965<span style="color: #949494;">, </span>1965<span style="color: #949494;">, </span>1965<span style="color: #949494;">, </span>1965<span style="color: #949494;">, </span>1965<span style="color: #949494;">, </span>196…</span></span>
+<span><span class="co">#&gt; $ month  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 1<span style="color: #949494;">, </span>1<span style="color: #949494;">, </span>1<span style="color: #949494;">, </span>1<span style="color: #949494;">, </span>1<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>3<span style="color: #949494;">, </span>3<span style="color: #949494;">, </span>3<span style="color: #949494;">, </span>3<span style="color: #949494;">, </span>3<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>5<span style="color: #949494;">, </span>…</span></span>
+<span><span class="co">#&gt; $ y      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> -0.54241769<span style="color: #949494;">, </span>-0.34410776<span style="color: #949494;">, </span>-0.07684901<span style="color: #949494;">, </span>-1.52243490<span style="color: #949494;">, </span>-0.49055442…</span></span>
+<span><span class="co">#&gt; $ series <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> Greens<span style="color: #949494;">, </span>Bluegreens<span style="color: #949494;">, </span>Diatoms<span style="color: #949494;">, </span>Unicells<span style="color: #949494;">, </span>Other.algae<span style="color: #949494;">, </span>Greens<span style="color: #949494;">, </span>Blu…</span></span>
+<span><span class="co">#&gt; $ temp   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> -1.2306562<span style="color: #949494;">, </span>-1.2306562<span style="color: #949494;">, </span>-1.2306562<span style="color: #949494;">, </span>-1.2306562<span style="color: #949494;">, </span>-1.2306562<span style="color: #949494;">, </span>-1.…</span></span>
+<span><span class="co">#&gt; $ time   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 1<span style="color: #949494;">, </span>1<span style="color: #949494;">, </span>1<span style="color: #949494;">, </span>1<span style="color: #949494;">, </span>1<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>3<span style="color: #949494;">, </span>3<span style="color: #949494;">, </span>3<span style="color: #949494;">, </span>3<span style="color: #949494;">, </span>3<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>5<span style="color: #949494;">, </span>…</span></span></code></pre></div>
 <p>Note that we have z-scored the counts in this example as that will
 make it easier to specify priors (though this is not completely
 necessary; it is often better to build a model that respects the
@@ -448,7 +448,7 @@ which assumes that process errors are contemporaneously uncorrelated</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">var_mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mvgam.html">mvgam</a></span><span class="op">(</span></span>
 <span>  <span class="co"># observation formula, which is empty</span></span>
-<span>  <span class="va">y</span> <span class="op">~</span> <span class="op">-</span><span class="fl">1</span>,</span>
+<span>  forumla <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="op">-</span><span class="fl">1</span>,</span>
 <span></span>
 <span>  <span class="co"># process model formula, which includes the smooth functions</span></span>
 <span>  trend_formula <span class="op">=</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/te.html" class="external-link">te</a></span><span class="op">(</span><span class="va">temp</span>, <span class="va">month</span>, k <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -594,8 +594,7 @@ to interpret:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Stan MCMC diagnostics:</span></span>
 <span><span class="co">#&gt; ✔ No issues with effective samples per iteration</span></span>
-<span><span class="co">#&gt; ✖ Rhats above 1.05 found for some parameters</span></span>
-<span><span class="co">#&gt;     Use pairs() and mcmc_plot() to investigate</span></span>
+<span><span class="co">#&gt; ✔ Rhat looks good for all parameters</span></span>
 <span><span class="co">#&gt; ✔ No issues with divergences</span></span>
 <span><span class="co">#&gt; ✔ No issues with maximum tree depth</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -611,22 +610,19 @@ operate on the process model. We can see the same plot using
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">var_mod</span>, <span class="st">"smooths"</span>, trend_effects <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="trend_formulas_files/figure-html/unnamed-chunk-26-1.png" width="60%" style="display: block; margin: auto;"><img src="trend_formulas_files/figure-html/unnamed-chunk-26-2.png" width="60%" style="display: block; margin: auto;"></p>
-<p>The VAR matrix is of particular interest here, as it captures lagged
-dependencies and cross-dependencies in the latent process model.
-Unfortunately <code>bayesplot</code> doesn’t know this is a matrix of
-parameters so what we see is actually the transpose of the VAR matrix. A
-little bit of wrangling gives us these histograms in the correct
-order:</p>
+<p>The autoregressive coefficient matrix is of particular interest here,
+as it captures lagged dependencies and cross-dependencies in the latent
+process model. Unfortunately <code>bayesplot</code> doesn’t know this is
+a matrix of parameters so what we see is actually the transpose of the
+VAR matrix. Using <code>dir = 'v'</code> in the <code>facet_args</code>
+argument will accomplish this:</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">A_pars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="cn">NA</span>, nrow <span class="op">=</span> <span class="fl">5</span>, ncol <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="va">A_pars</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"A["</span>, <span class="va">i</span>, <span class="st">","</span>, <span class="va">j</span>, <span class="st">"]"</span><span class="op">)</span></span>
-<span>  <span class="op">}</span></span>
-<span><span class="op">}</span></span>
-<span><span class="fu"><a href="https://paulbuerkner.com/brms/reference/mcmc_plot.brmsfit.html" class="external-link">mcmc_plot</a></span><span class="op">(</span><span class="va">var_mod</span>,</span>
-<span>  variable <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">A_pars</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  type <span class="op">=</span> <span class="st">"hist"</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://paulbuerkner.com/brms/reference/mcmc_plot.brmsfit.html" class="external-link">mcmc_plot</a></span><span class="op">(</span></span>
+<span>  <span class="va">var_mod</span>,</span>
+<span>  variable <span class="op">=</span> <span class="st">'A'</span>,</span>
+<span>  regex <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">'hist'</span>,</span>
+<span>  facet_args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>dir <span class="op">=</span> <span class="st">'v'</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="trend_formulas_files/figure-html/unnamed-chunk-27-1.png" width="60%" style="display: block; margin: auto;"></p>
 <p>There is a lot happening in this matrix. Each cell captures the
@@ -641,15 +637,12 @@ captures unmodelled variation in the process models. Again, we fixed the
 off-diagonals to 0, so the histograms for these will look like flat
 boxes:</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">Sigma_pars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="cn">NA</span>, nrow <span class="op">=</span> <span class="fl">5</span>, ncol <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="va">Sigma_pars</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Sigma["</span>, <span class="va">i</span>, <span class="st">","</span>, <span class="va">j</span>, <span class="st">"]"</span><span class="op">)</span></span>
-<span>  <span class="op">}</span></span>
-<span><span class="op">}</span></span>
-<span><span class="fu"><a href="https://paulbuerkner.com/brms/reference/mcmc_plot.brmsfit.html" class="external-link">mcmc_plot</a></span><span class="op">(</span><span class="va">var_mod</span>,</span>
-<span>  variable <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">Sigma_pars</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  type <span class="op">=</span> <span class="st">"hist"</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://paulbuerkner.com/brms/reference/mcmc_plot.brmsfit.html" class="external-link">mcmc_plot</a></span><span class="op">(</span></span>
+<span>  <span class="va">var_mod</span>,</span>
+<span>  variable <span class="op">=</span> <span class="st">'Sigma'</span>,</span>
+<span>  regex <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">'hist'</span>,</span>
+<span>  facet_args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>dir <span class="op">=</span> <span class="st">'v'</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="trend_formulas_files/figure-html/unnamed-chunk-28-1.png" width="60%" style="display: block; margin: auto;"></p>
 <p>The observation error estimates <span class="math inline">\((\sigma_{obs})\)</span> represent how much the
@@ -678,7 +671,7 @@ observation errors:</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">varcor_mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mvgam.html">mvgam</a></span><span class="op">(</span></span>
 <span>  <span class="co"># observation formula, which remains empty</span></span>
-<span>  <span class="va">y</span> <span class="op">~</span> <span class="op">-</span><span class="fl">1</span>,</span>
+<span>  formula <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="op">-</span><span class="fl">1</span>,</span>
 <span></span>
 <span>  <span class="co"># process model formula, which includes the smooth functions</span></span>
 <span>  trend_formula <span class="op">=</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/te.html" class="external-link">te</a></span><span class="op">(</span><span class="va">temp</span>, <span class="va">month</span>, k <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -697,15 +690,12 @@ observation errors:</p>
 <p>The <span class="math inline">\((\Sigma)\)</span> matrix now captures
 any evidence of contemporaneously correlated process error:</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">Sigma_pars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="cn">NA</span>, nrow <span class="op">=</span> <span class="fl">5</span>, ncol <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="va">Sigma_pars</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Sigma["</span>, <span class="va">i</span>, <span class="st">","</span>, <span class="va">j</span>, <span class="st">"]"</span><span class="op">)</span></span>
-<span>  <span class="op">}</span></span>
-<span><span class="op">}</span></span>
-<span><span class="fu"><a href="https://paulbuerkner.com/brms/reference/mcmc_plot.brmsfit.html" class="external-link">mcmc_plot</a></span><span class="op">(</span><span class="va">varcor_mod</span>,</span>
-<span>  variable <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">Sigma_pars</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  type <span class="op">=</span> <span class="st">"hist"</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://paulbuerkner.com/brms/reference/mcmc_plot.brmsfit.html" class="external-link">mcmc_plot</a></span><span class="op">(</span></span>
+<span>  <span class="va">varcor_mod</span>,</span>
+<span>  variable <span class="op">=</span> <span class="st">'Sigma'</span>,</span>
+<span>  regex <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">'hist'</span>,</span>
+<span>  facet_args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>dir <span class="op">=</span> <span class="st">'v'</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="trend_formulas_files/figure-html/unnamed-chunk-32-1.png" width="60%" style="display: block; margin: auto;"></p>
 <p>This symmetric matrix tells us there is support for correlated
@@ -714,11 +704,20 @@ non-zero. But it is easier to interpret these estimates if we convert
 the covariance matrix to a correlation matrix. Here we compute the
 posterior median process error correlations:</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">Sigma_post</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">varcor_mod</span>, variable <span class="op">=</span> <span class="st">"Sigma"</span>, regex <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="va">median_correlations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov2cor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">Sigma_post</span>, <span class="fl">2</span>, <span class="va">median</span><span class="op">)</span>,</span>
-<span>  nrow <span class="op">=</span> <span class="fl">5</span>, ncol <span class="op">=</span> <span class="fl">5</span></span>
-<span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">median_correlations</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">median_correlations</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">plankton_train</span><span class="op">$</span><span class="va">series</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">Sigma_post</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span></span>
+<span>  <span class="va">varcor_mod</span>, </span>
+<span>  variable <span class="op">=</span> <span class="st">"Sigma"</span>, </span>
+<span>  regex <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">median_correlations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov2cor</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">Sigma_post</span>, <span class="fl">2</span>, <span class="va">median</span><span class="op">)</span>,</span>
+<span>         nrow <span class="op">=</span> <span class="fl">5</span>, </span>
+<span>         ncol <span class="op">=</span> <span class="fl">5</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">median_correlations</span><span class="op">)</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">median_correlations</span><span class="op">)</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">plankton_train</span><span class="op">$</span><span class="va">series</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">median_correlations</span>, <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">#&gt;             Bluegreens Diatoms Greens Other.algae Unicells</span></span>
@@ -755,18 +754,18 @@ timesteps:</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">irfs</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 300 × 5</span></span></span>
-<span><span class="co">#&gt;    shock                horizon irf_median irf_Qlower irf_Qupper</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> Process1 -&gt; Process1       1     0.353      0.270       0.446</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> Process1 -&gt; Process1       2     0.298      0.236       0.371</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> Process1 -&gt; Process1       3     0.252      0.196       0.318</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> Process1 -&gt; Process1       4     0.214      0.159       0.280</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> Process1 -&gt; Process1       5     0.181      0.126       0.250</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> Process1 -&gt; Process1       6     0.153      0.097<span style="text-decoration: underline;">1</span>      0.227</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> Process1 -&gt; Process1       7     0.130      0.073<span style="text-decoration: underline;">4</span>      0.204</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> Process1 -&gt; Process1       8     0.111      0.054<span style="text-decoration: underline;">1</span>      0.184</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Process1 -&gt; Process1       9     0.095<span style="text-decoration: underline;">1</span>     0.039<span style="text-decoration: underline;">6</span>      0.169</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Process1 -&gt; Process1      10     0.080<span style="text-decoration: underline;">8</span>     0.028<span style="text-decoration: underline;">8</span>      0.155</span></span>
+<span><span class="co">#&gt;    shock                horizon irfQ50 irfQ2.5 irfQ97.5</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> Process1 -&gt; Process1       1 0.353   0.270     0.446</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> Process1 -&gt; Process1       2 0.298   0.236     0.371</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> Process1 -&gt; Process1       3 0.252   0.196     0.318</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> Process1 -&gt; Process1       4 0.214   0.159     0.280</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> Process1 -&gt; Process1       5 0.181   0.126     0.250</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> Process1 -&gt; Process1       6 0.153   0.097<span style="text-decoration: underline;">1</span>    0.227</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> Process1 -&gt; Process1       7 0.130   0.073<span style="text-decoration: underline;">4</span>    0.204</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> Process1 -&gt; Process1       8 0.111   0.054<span style="text-decoration: underline;">1</span>    0.184</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Process1 -&gt; Process1       9 0.095<span style="text-decoration: underline;">1</span>  0.039<span style="text-decoration: underline;">6</span>    0.169</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Process1 -&gt; Process1      10 0.080<span style="text-decoration: underline;">8</span>  0.028<span style="text-decoration: underline;">8</span>    0.155</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 290 more rows</span></span></span></code></pre></div>
 <p>But it is easier to understand these responses using plots. For
 example, we can plot the expected responses of the remaining series to a
@@ -802,8 +801,8 @@ of sample forecasts to get a sense of which model does a better job of
 capturing the dependence structure in the true evaluation set:</p>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># create forecast objects for each model</span></span>
-<span><span class="va">fcvar</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/forecast.mvgam.html">forecast</a></span><span class="op">(</span><span class="va">var_mod</span><span class="op">)</span></span>
-<span><span class="va">fcvarcor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/forecast.mvgam.html">forecast</a></span><span class="op">(</span><span class="va">varcor_mod</span><span class="op">)</span></span>
+<span><span class="va">fcvar</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast</a></span><span class="op">(</span><span class="va">var_mod</span><span class="op">)</span></span>
+<span><span class="va">fcvarcor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast</a></span><span class="op">(</span><span class="va">varcor_mod</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># plot the difference in variogram scores; a negative value means the VAR1cor model is better, while a positive value means the VAR1 model is better</span></span>
 <span><span class="va">diff_scores</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/score.mvgam_forecast.html">score</a></span><span class="op">(</span><span class="va">fcvarcor</span>, score <span class="op">=</span> <span class="st">"variogram"</span><span class="op">)</span><span class="op">$</span><span class="va">all_series</span><span class="op">$</span><span class="va">score</span> <span class="op">-</span></span>
@@ -856,7 +855,7 @@ stationary:</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">description</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; Methods text skeleton</span></span>
-<span><span class="co">#&gt; We used the R package mvgam (version 1.1.51; Clark &amp; Wells, 2023) to</span></span>
+<span><span class="co">#&gt; We used the R package mvgam (version 1.1.57; Clark &amp; Wells, 2023) to</span></span>
 <span><span class="co">#&gt;   construct, fit and interrogate the model. mvgam fits Bayesian</span></span>
 <span><span class="co">#&gt;   State-Space models that can include flexible predictor effects in both</span></span>
 <span><span class="co">#&gt;   the process and observation components by incorporating functionalities</span></span>

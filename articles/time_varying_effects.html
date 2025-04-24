@@ -34,7 +34,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mvgam</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.51</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.57</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -89,7 +89,7 @@
                         <h4 data-toc-skip class="author">Nicholas J
 Clark</h4>
             
-            <h4 data-toc-skip class="date">2025-03-14</h4>
+            <h4 data-toc-skip class="date">2025-04-24</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/nicholasjclark/mvgam/blob/HEAD/vignettes/time_varying_effects.Rmd" class="external-link"><code>vignettes/time_varying_effects.Rmd</code></a></small>
       <div class="d-none name"><code>time_varying_effects.Rmd</code></div>
@@ -291,7 +291,7 @@ values of <span class="math inline">\(temperature\)</span>:</p>
 <p><img src="time_varying_effects_files/figure-html/unnamed-chunk-11-1.png" width="60%" style="display: block; margin: auto;"></p>
 <p>This results in sensible forecasts of the observations as well</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/forecast.mvgam.html">forecast</a></span><span class="op">(</span><span class="va">mod</span>, newdata <span class="op">=</span> <span class="va">data_test</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">fc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast</a></span><span class="op">(</span><span class="va">mod</span>, newdata <span class="op">=</span> <span class="va">data_test</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fc</span><span class="op">)</span></span></code></pre></div>
 <p><img src="time_varying_effects_files/figure-html/unnamed-chunk-12-1.png" width="60%" style="display: block; margin: auto;"></p>
 <p>The syntax is very similar if we wish to estimate the parameters of
@@ -388,9 +388,9 @@ proportional variable over 42 years (1964–2005) and is available in the
 <span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">SalmonSurvCUI</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Rows: 42</span></span>
 <span><span class="co">#&gt; Columns: 3</span></span>
-<span><span class="co">#&gt; $ year    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 1964, 1965, 1966, 1967, 1968, 1969, 1970, 1971, 1972, 1973, 19…</span></span>
-<span><span class="co">#&gt; $ logit.s <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> -3.46, -3.32, -3.58, -3.03, -3.61, -3.35, -3.93, -4.19, -4.82,…</span></span>
-<span><span class="co">#&gt; $ CUI.apr <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 57, 5, 43, 11, 47, -21, 25, -2, -1, 43, 2, 35, 0, 1, -1, 6, -7…</span></span></code></pre></div>
+<span><span class="co">#&gt; $ year    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 1964<span style="color: #949494;">, </span>1965<span style="color: #949494;">, </span>1966<span style="color: #949494;">, </span>1967<span style="color: #949494;">, </span>1968<span style="color: #949494;">, </span>1969<span style="color: #949494;">, </span>1970<span style="color: #949494;">, </span>1971<span style="color: #949494;">, </span>1972<span style="color: #949494;">, </span>1973<span style="color: #949494;">, </span>19…</span></span>
+<span><span class="co">#&gt; $ logit.s <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> -3.46<span style="color: #949494;">, </span>-3.32<span style="color: #949494;">, </span>-3.58<span style="color: #949494;">, </span>-3.03<span style="color: #949494;">, </span>-3.61<span style="color: #949494;">, </span>-3.35<span style="color: #949494;">, </span>-3.93<span style="color: #949494;">, </span>-4.19<span style="color: #949494;">, </span>-4.82<span style="color: #949494;">,</span>…</span></span>
+<span><span class="co">#&gt; $ CUI.apr <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 57<span style="color: #949494;">, </span>5<span style="color: #949494;">, </span>43<span style="color: #949494;">, </span>11<span style="color: #949494;">, </span>47<span style="color: #949494;">, </span>-21<span style="color: #949494;">, </span>25<span style="color: #949494;">, </span>-2<span style="color: #949494;">, </span>-1<span style="color: #949494;">, </span>43<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>35<span style="color: #949494;">, </span>0<span style="color: #949494;">, </span>1<span style="color: #949494;">, </span>-1<span style="color: #949494;">, </span>6<span style="color: #949494;">, </span>-7…</span></span></code></pre></div>
 <p>First we need to prepare the data for modelling. The variable
 <code>CUI.apr</code> will be standardized to make it easier for the
 sampler to estimate underlying GP parameters for the time-varying
@@ -414,12 +414,12 @@ indicator for working in <code>mvgam</code>:</p>
 <code class="sourceCode R"><span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">model_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Rows: 42</span></span>
 <span><span class="co">#&gt; Columns: 6</span></span>
-<span><span class="co">#&gt; $ year     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 1964, 1965, 1966, 1967, 1968, 1969, 1970, 1971, 1972, 1973, 1…</span></span>
-<span><span class="co">#&gt; $ logit.s  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> -3.46, -3.32, -3.58, -3.03, -3.61, -3.35, -3.93, -4.19, -4.82…</span></span>
-<span><span class="co">#&gt; $ CUI.apr  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 2.37949804, 0.03330223, 1.74782994, 0.30401713, 1.92830654, -…</span></span>
-<span><span class="co">#&gt; $ time     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18…</span></span>
-<span><span class="co">#&gt; $ series   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> salmon, salmon, salmon, salmon, salmon, salmon, salmon, salmo…</span></span>
-<span><span class="co">#&gt; $ survival <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0.030472033, 0.034891409, 0.027119717, 0.046088827, 0.0263393…</span></span></code></pre></div>
+<span><span class="co">#&gt; $ year     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 1964<span style="color: #949494;">, </span>1965<span style="color: #949494;">, </span>1966<span style="color: #949494;">, </span>1967<span style="color: #949494;">, </span>1968<span style="color: #949494;">, </span>1969<span style="color: #949494;">, </span>1970<span style="color: #949494;">, </span>1971<span style="color: #949494;">, </span>1972<span style="color: #949494;">, </span>1973<span style="color: #949494;">, </span>1…</span></span>
+<span><span class="co">#&gt; $ logit.s  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> -3.46<span style="color: #949494;">, </span>-3.32<span style="color: #949494;">, </span>-3.58<span style="color: #949494;">, </span>-3.03<span style="color: #949494;">, </span>-3.61<span style="color: #949494;">, </span>-3.35<span style="color: #949494;">, </span>-3.93<span style="color: #949494;">, </span>-4.19<span style="color: #949494;">, </span>-4.82…</span></span>
+<span><span class="co">#&gt; $ CUI.apr  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 2.37949804<span style="color: #949494;">, </span>0.03330223<span style="color: #949494;">, </span>1.74782994<span style="color: #949494;">, </span>0.30401713<span style="color: #949494;">, </span>1.92830654<span style="color: #949494;">, </span>-…</span></span>
+<span><span class="co">#&gt; $ time     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 1<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>3<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>5<span style="color: #949494;">, </span>6<span style="color: #949494;">, </span>7<span style="color: #949494;">, </span>8<span style="color: #949494;">, </span>9<span style="color: #949494;">, </span>10<span style="color: #949494;">, </span>11<span style="color: #949494;">, </span>12<span style="color: #949494;">, </span>13<span style="color: #949494;">, </span>14<span style="color: #949494;">, </span>15<span style="color: #949494;">, </span>16<span style="color: #949494;">, </span>17<span style="color: #949494;">, </span>18…</span></span>
+<span><span class="co">#&gt; $ series   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> salmon<span style="color: #949494;">, </span>salmon<span style="color: #949494;">, </span>salmon<span style="color: #949494;">, </span>salmon<span style="color: #949494;">, </span>salmon<span style="color: #949494;">, </span>salmon<span style="color: #949494;">, </span>salmon<span style="color: #949494;">, </span>salmo…</span></span>
+<span><span class="co">#&gt; $ survival <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0.030472033<span style="color: #949494;">, </span>0.034891409<span style="color: #949494;">, </span>0.027119717<span style="color: #949494;">, </span>0.046088827<span style="color: #949494;">, </span>0.0263393…</span></span></code></pre></div>
 <p>Plot features of the outcome variable, which shows that it is a
 proportional variable with particular restrictions that we want to
 model:</p>
@@ -637,8 +637,8 @@ leave-one-out cross-validation as implemented in the popular
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://mc-stan.org/loo/reference/loo_compare.html" class="external-link">loo_compare</a></span><span class="op">(</span><span class="va">mod0</span>, <span class="va">mod1</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      elpd_diff se_diff</span></span>
-<span><span class="co">#&gt; mod1  0.0       0.0   </span></span>
-<span><span class="co">#&gt; mod0 -9.3       3.1</span></span></code></pre></div>
+<span><span class="co">#&gt; mod0     0.0       0.0</span></span>
+<span><span class="co">#&gt; mod1 -1402.1     148.0</span></span></code></pre></div>
 <p>The second model has the larger Expected Log Predictive Density
 (ELPD), meaning that it is slightly favoured over the simpler model that
 did not include the time-varying upwelling effect. However, the two
@@ -660,9 +660,9 @@ more about how this process works in Bürkner et al. 2020).</p>
 better 1-step ahead forecasts, with a higher total forecast ELPD</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">lfo_mod0</span><span class="op">$</span><span class="va">elpds</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 35.72628</span></span>
+<span><span class="co">#&gt; [1] 35.65626</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">lfo_mod1</span><span class="op">$</span><span class="va">elpds</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 37.17856</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 37.10818</span></span></code></pre></div>
 <p>We can also plot the ELPDs for each model as a contrast. Here, values
 less than zero suggest the time-varying predictor model (Mod1) gives
 better 1-step ahead forecasts:</p>

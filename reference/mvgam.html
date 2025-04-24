@@ -28,7 +28,7 @@ leave-one-out / leave-future-out cross-validation."><meta property="og:image" co
     
     <a class="navbar-brand me-2" href="../index.html">mvgam</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.51</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.57</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -195,7 +195,7 @@ source of error; similarly to what is estimated by <code><a href="https://rdrr.i
 <li><p><code>'AR1'</code> or <code>AR(p = 1)</code></p></li>
 <li><p><code>'AR2'</code> or <code>AR(p = 2)</code></p></li>
 <li><p><code>'AR3'</code> or <code>AR(p = 3)</code></p></li>
-<li><p><code>'CAR1'</code> or <code>CAR(p = 1)</code></p></li>
+<li><p><code>'CAR1'</code> or <code>CAR(p = 1)</code> (also known as an Ornstein–Uhlenbeck process)</p></li>
 <li><p><code>'VAR1'</code>  or <code><a href="RW.html">VAR()</a></code>(only available in <code>Stan</code>)</p></li>
 <li><p><code>'PWlogistic</code>, <code>'PWlinear'</code> or <code><a href="piecewise_trends.html">PW()</a></code> (only available in <code>Stan</code>)</p></li>
 <li><p><code>'GP'</code> or <code><a href="GP.html">GP()</a></code> (Gaussian Process with squared exponential kernel;
@@ -205,7 +205,7 @@ average and/or correlated process error terms can also be estimated (for
 example, <code>RW(cor = TRUE)</code> will set up a multivariate Random Walk if <code>n_series &gt; 1</code>).
 It is also possible for many multivariate trends to estimate hierarchical
 correlations if the data are structured among levels of a relevant grouping
-factor. See <a href="mvgam_trends.html">mvgam_trends</a> for more details and see <a href="ZMVN.html">ZMVN</a> for an example.</p></dd>
+factor. See <a href="mvgam_trends.html">mvgam_trends</a> for more details and see <code><a href="ZMVN.html">ZMVN()</a></code> for an example.</p></dd>
 
 
 <dt>noncentred</dt>
@@ -277,14 +277,14 @@ use irregularly spaced intervals if using <code>trend_model = CAR(1)</code>, tho
 note that any
 temporal intervals that are exactly <code>0</code> will be adjusted to a very small number
 (<code>1e-12</code>) to prevent sampling errors. See an example of <code><a href="RW.html">CAR()</a></code> trends in
-<code><a href="RW.html">CAR</a></code></p></li>
+<code><a href="RW.html">CAR()</a></code></p></li>
 </ul><p>Note however that there are special cases where these identifiers are not
 needed. For
 example, models with hierarchical temporal correlation processes (e.g.
 <code>AR(gr = region, subgr = species)</code>)
 should NOT include a <code>series</code> identifier, as this will be constructed
 internally (see
-<code><a href="mvgam_trends.html">mvgam_trends</a></code> and <code><a href="RW.html">AR</a></code> for details). <code>mvgam</code> can also
+<code><a href="mvgam_trends.html">mvgam_trends</a></code> and <code><a href="RW.html">AR()</a></code> for details). <code>mvgam()</code> can also
 fit models that do not
 include a <code>time</code> variable if there are no temporal dynamic structures included
 (i.e. <code>trend_model = 'None'</code> or
@@ -305,7 +305,8 @@ simulations can be obtained</p></dd>
 <dt>use_lv</dt>
 <dd><p><code>logical</code>. If <code>TRUE</code>, use dynamic factors to estimate series'
 latent trends in a reduced dimension format. Only available for
-<code><a href="RW.html">RW()</a></code>, <code><a href="RW.html">AR()</a></code> and <code><a href="GP.html">GP()</a></code> trend models. Defaults to <code>FALSE</code></p></dd>
+<code><a href="RW.html">RW()</a></code>, <code><a href="RW.html">AR()</a></code> and <code><a href="GP.html">GP()</a></code> trend models. Defaults to <code>FALSE</code>. See
+<code><a href="lv_correlations.html">lv_correlations</a></code> for a worked example</p></dd>
 
 
 <dt>n_lv</dt>
@@ -325,15 +326,15 @@ trend each series should depend on. The <code>series</code> column should have a
 unique entry for each series in the data (names should perfectly match factor
 levels of the <code>series</code> variable in <code>data</code>). Note that if this is supplied,
 the intercept parameter in the process model will NOT be automatically suppressed.
-Not yet supported for models in wich the latent factors evolve in continuous time (<code><a href="RW.html">CAR()</a></code>).
+Not yet supported for models in which the latent factors evolve in continuous time (<code><a href="RW.html">CAR()</a></code>).
 See examples for details</p></dd>
 
 
 <dt>priors</dt>
 <dd><p>An optional <code>data.frame</code> with prior
 definitions or, preferentially, a vector containing
-objects of class <code>brmsprior</code> (see. <code><a href="https://paulbuerkner.com/brms/reference/set_prior.html" class="external-link">prior</a></code> for details).
-See <a href="get_mvgam_priors.html">get_mvgam_priors</a> and Details' for more information on changing default prior distributions</p></dd>
+objects of class <code>brmsprior</code> (see. <code><a href="https://paulbuerkner.com/brms/reference/set_prior.html" class="external-link">prior</a>()</code> for details).
+See <code><a href="get_mvgam_priors.html">get_mvgam_priors()</a></code> and Details' for more information on changing default prior distributions</p></dd>
 
 
 <dt>run_model</dt>
@@ -362,7 +363,7 @@ is needed to fit the
 model is returned, along with the initial values for smooth and AR parameters,
 once the model is fitted.
 This will be helpful if users wish to modify the model file to add
-other stochastic elements that are not currently available in <code>mvgam</code>.
+other stochastic elements that are not currently available in <span class="pkg">mvgam</span>.
 Default is <code>FALSE</code> to reduce
 the size of the returned object, unless <code>run_model == FALSE</code></p></dd>
 
@@ -451,7 +452,7 @@ can also set open_progress = FALSE to prevent opening additional progress bars.<
 
 
 <dt>refit</dt>
-<dd><p>Logical indicating whether this is a refit, called using <a href="update.mvgam.html">update.mvgam</a>. Users should leave
+<dd><p>Logical indicating whether this is a refit, called using <code><a href="update.mvgam.html">update.mvgam()</a></code>. Users should leave
 as <code>FALSE</code></p></dd>
 
 
@@ -465,7 +466,7 @@ leave this set as <code>FALSE</code></p></dd>
 <dt>...</dt>
 <dd><p>Further arguments passed to Stan.
 For <code>backend = "rstan"</code> the arguments are passed to
-<code><a href="https://mc-stan.org/rstan/reference/stanmodel-method-sampling.html" class="external-link">sampling</a></code> or <code><a href="https://mc-stan.org/rstan/reference/stanmodel-method-vb.html" class="external-link">vb</a></code>.
+<code><a href="https://mc-stan.org/rstan/reference/stanmodel-method-sampling.html" class="external-link">sampling</a>()</code> or <code><a href="https://mc-stan.org/rstan/reference/stanmodel-method-vb.html" class="external-link">vb</a>()</code>.
 For <code>backend = "cmdstanr"</code> the arguments are passed to the
 <code><a href="https://mc-stan.org/cmdstanr/reference/model-method-sample.html" class="external-link">cmdstanr::sample</a></code>, <code><a href="https://mc-stan.org/cmdstanr/reference/model-method-variational.html" class="external-link">cmdstanr::variational</a></code>,
 <code><a href="https://mc-stan.org/cmdstanr/reference/model-method-laplace.html" class="external-link">cmdstanr::laplace</a></code> or
@@ -506,7 +507,7 @@ can be found in <code><a href="mvgam_trends.html">mvgam_trends</a></code>.
 <br><br><em>Priors</em>: Default priors for intercepts and any variance parameters are chosen
 to be vaguely informative, but these should always be checked by the user.
 Prior distributions for most important model parameters can be altered
-(see <code><a href="get_mvgam_priors.html">get_mvgam_priors</a></code> for details).
+(see <code><a href="get_mvgam_priors.html">get_mvgam_priors()</a></code> for details).
 Note that latent trends are estimated on the link scale so choose priors
 accordingly. However more control over the model specification can be accomplished
 by setting <code>run_model = FALSE</code> and then editing the model code (
@@ -548,34 +549,34 @@ the <a href="https://nicholasjclark.github.io/mvgam/articles/mvgam_overview.html
 the <a href="https://nicholasjclark.github.io/mvgam/articles/shared_states.html">shared latent states vignette</a>,
 the <a href="https://nicholasjclark.github.io/mvgam/articles/time_varying_effects.html">time-varying effects vignette</a> and
 the <a href="https://nicholasjclark.github.io/mvgam/articles/trend_formulas.html">State-Space models vignette</a> all provide
-useful information about how to structure, fit and interrogate Dynamic Generalized Additive Models in <code>mvgam</code>. Some
+useful information about how to structure, fit and interrogate Dynamic Generalized Additive Models in <span class="pkg">mvgam</span>. Some
 more specialized how-to articles include
 <a href="https://nicholasjclark.github.io/mvgam/articles/nmixtures.html">"Fitting N-mixture models in <code>mgam</code></a>,
 <a href="https://nicholasjclark.github.io/mvgam/reference/jsdgam.html">"Joint Species Distribution Models in <code>mgam</code></a>,
 <a href="https://ecogambler.netlify.app/blog/time-varying-seasonality/" class="external-link">"Incorporating time-varying seasonality in forecast models"</a>
 and <a href="https://ecogambler.netlify.app/blog/autocorrelated-gams/" class="external-link">"Temporal autocorrelation in GAMs and the <code>mvgam</code> package"</a></p></li>
-<li><p>3. Carefully think about how to structure linear predictor effects (i.e. smooth terms using <code><a href="https://rdrr.io/pkg/mgcv/man/s.html" class="external-link">s</a></code>,
-<code><a href="https://rdrr.io/pkg/mgcv/man/te.html" class="external-link">te</a></code> or <code><a href="https://rdrr.io/pkg/mgcv/man/te.html" class="external-link">ti</a></code>, GPs using <code><a href="https://paulbuerkner.com/brms/reference/gp.html" class="external-link">gp</a></code>, dynamic time-varying effects using <code><a href="dynamic.html">dynamic</a></code>, and parametric terms), latent temporal trend components (see <code><a href="mvgam_trends.html">mvgam_trends</a></code>) and the appropriate
-observation family (see <code><a href="mvgam_families.html">mvgam_families</a></code>). Use <code><a href="get_mvgam_priors.html">get_mvgam_priors</a></code> to see default prior distributions
+<li><p>3. Carefully think about how to structure linear predictor effects (i.e. smooth terms using <code><a href="https://rdrr.io/pkg/mgcv/man/s.html" class="external-link">s</a>()</code>,
+<code><a href="https://rdrr.io/pkg/mgcv/man/te.html" class="external-link">te</a>()</code> or <code><a href="https://rdrr.io/pkg/mgcv/man/te.html" class="external-link">ti</a>()</code>, GPs using <code><a href="https://paulbuerkner.com/brms/reference/gp.html" class="external-link">gp</a>()</code>, dynamic time-varying effects using <code><a href="dynamic.html">dynamic()</a></code>, and parametric terms), latent temporal trend components (see <code><a href="mvgam_trends.html">mvgam_trends</a></code>) and the appropriate
+observation family (see <code><a href="mvgam_families.html">mvgam_families</a></code>). Use <code><a href="get_mvgam_priors.html">get_mvgam_priors()</a></code> to see default prior distributions
 for stochastic parameters</p></li>
-<li><p>4. Change default priors using appropriate prior knowledge (see <code><a href="https://paulbuerkner.com/brms/reference/set_prior.html" class="external-link">prior</a></code>). When using State-Space models
+<li><p>4. Change default priors using appropriate prior knowledge (see <code><a href="https://paulbuerkner.com/brms/reference/set_prior.html" class="external-link">prior</a>()</code>). When using State-Space models
 with a <code>trend_formula</code>, pay particular attention to priors for any variance parameters such as process errors and observation
 errors. Default priors on these parameters are chosen to be vaguely informative and to avoid
 zero (using Inverse Gamma priors), but more informative priors will often help with
 model efficiency and convergence</p></li>
 <li><p>5. Fit the model using either Hamiltonian Monte Carlo or an approximation algorithm (i.e.
-change the <code>backend</code> argument) and use <code><a href="summary.mvgam.html">summary.mvgam</a></code>, <code><a href="conditional_effects.mvgam.html">conditional_effects.mvgam</a></code>,
-<code><a href="mcmc_plot.mvgam.html">mcmc_plot.mvgam</a></code>, <code><a href="pp_check.mvgam.html">pp_check.mvgam</a></code>, <code><a href="pairs.mvgam.html">pairs.mvgam</a></code> and
-<code><a href="plot.mvgam.html">plot.mvgam</a></code> to inspect / interrogate the model</p></li>
-<li><p>6. Update the model as needed and use <code><a href="loo.mvgam.html">loo_compare.mvgam</a></code> for in-sample model comparisons,
-or alternatively use <code><a href="forecast.mvgam.html">forecast.mvgam</a></code>, <code><a href="lfo_cv.mvgam.html">lfo_cv.mvgam</a></code> and
-<code><a href="score.mvgam_forecast.html">score.mvgam_forecast</a></code> to compare models based on out-of-sample forecasts
+change the <code>backend</code> argument) and use <code><a href="summary.mvgam.html">summary.mvgam()</a></code>, <code><a href="conditional_effects.mvgam.html">conditional_effects.mvgam()</a></code>,
+<code><a href="mcmc_plot.mvgam.html">mcmc_plot.mvgam()</a></code>, <code><a href="pp_check.mvgam.html">pp_check.mvgam()</a></code>, <code><a href="pairs.mvgam.html">pairs.mvgam()</a></code> and
+<code><a href="plot.mvgam.html">plot.mvgam()</a></code> to inspect / interrogate the model</p></li>
+<li><p>6. Update the model as needed and use <code><a href="loo.mvgam.html">loo_compare.mvgam()</a></code> for in-sample model comparisons,
+or alternatively use <code><a href="forecast.mvgam.html">forecast.mvgam()</a></code>, <code><a href="lfo_cv.mvgam.html">lfo_cv.mvgam()</a></code> and
+<code><a href="score.mvgam_forecast.html">score.mvgam_forecast()</a></code> to compare models based on out-of-sample forecasts
 (see the <a href="https://nicholasjclark.github.io/mvgam/articles/forecast_evaluation.html">forecast evaluation vignette</a>
 for guidance)</p></li>
-<li><p>7. When satisfied with the model structure, use <code><a href="predict.mvgam.html">predict.mvgam</a></code>,
-<code><a href="https://marginaleffects.com/man/r/plot_predictions.html" class="external-link">plot_predictions</a></code> and/or <code><a href="https://marginaleffects.com/man/r/plot_slopes.html" class="external-link">plot_slopes</a></code> for
+<li><p>7. When satisfied with the model structure, use <code><a href="predict.mvgam.html">predict.mvgam()</a></code>,
+<code><a href="https://marginaleffects.com/man/r/plot_predictions.html" class="external-link">plot_predictions</a>()</code> and/or <code><a href="https://marginaleffects.com/man/r/plot_slopes.html" class="external-link">plot_slopes</a>()</code> for
 more targeted inferences (see <a href="https://ecogambler.netlify.app/blog/interpreting-gams/" class="external-link">"How to interpret and report nonlinear effects from Generalized Additive Models"</a> for some guidance on interpreting GAMs)</p></li>
-<li><p>8. Use <code><a href="how_to_cite.mvgam.html">how_to_cite</a></code> to obtain a scaffold methods section (with full references) to begin describing this
+<li><p>8. Use <code><a href="how_to_cite.mvgam.html">how_to_cite()</a></code> to obtain a scaffold methods section (with full references) to begin describing this
 model in scientific publications</p></li>
 </ul></div>
     <div class="section level2">
@@ -590,8 +591,8 @@ multispecies forecasts to navigate the dynamics of ecological predictability. Pe
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="https://rdrr.io/pkg/mgcv/man/jagam.html" class="external-link">jagam</a></code>, <code><a href="https://rdrr.io/pkg/mgcv/man/gam.html" class="external-link">gam</a></code>, <code><a href="https://rdrr.io/pkg/mgcv/man/gam.models.html" class="external-link">gam.models</a></code>,
-<code><a href="get_mvgam_priors.html">get_mvgam_priors</a></code>, <code><a href="jsdgam.html">jsdgam</a></code></p></div>
+    <div class="dont-index"><p><code><a href="https://rdrr.io/pkg/mgcv/man/jagam.html" class="external-link">jagam</a>()</code>, <code><a href="https://rdrr.io/pkg/mgcv/man/gam.html" class="external-link">gam</a>()</code>, <code><a href="https://rdrr.io/pkg/mgcv/man/gam.models.html" class="external-link">gam.models</a></code>,
+<code><a href="get_mvgam_priors.html">get_mvgam_priors()</a></code>, <code><a href="jsdgam.html">jsdgam()</a></code></p></div>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
@@ -601,8 +602,8 @@ multispecies forecasts to navigate the dynamics of ecological predictability. Pe
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
-<span class="r-in"><span><span class="co"># Simulate a collection of three time series that have shared seasonal dynamics</span></span></span>
-<span class="r-in"><span><span class="co"># and independent AR1 trends, with a Poisson observation process</span></span></span>
+<span class="r-in"><span><span class="co"># Simulate three time series that have shared seasonal dynamics,</span></span></span>
+<span class="r-in"><span><span class="co"># independent AR(1) trends, and Poisson observations</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="sim_mvgam.html">sim_mvgam</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  T <span class="op">=</span> <span class="fl">80</span>,</span></span>
@@ -773,7 +774,7 @@ multispecies forecasts to navigate the dynamics of ecological predictability. Pe
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mod1</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> GAM formula:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> y ~ s(season, bs = "cc", k = 6)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55ae37a1b6b0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55e0ddf706c8&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Family:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> poisson</span>
@@ -868,11 +869,11 @@ multispecies forecasts to navigate the dynamics of ecological predictability. Pe
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   .resid.variability &lt;dbl&gt;, .resid.cred.low &lt;dbl&gt;, .resid.cred.high &lt;dbl&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Compute the forecast using covariate information in data_test</span></span></span>
-<span class="r-in"><span><span class="va">fc</span> <span class="op">&lt;-</span> <span class="fu"><a href="forecast.mvgam.html">forecast</a></span><span class="op">(</span><span class="va">mod1</span>, newdata <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">data_test</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast</a></span><span class="op">(</span><span class="va">mod1</span>, newdata <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">data_test</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">fc</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> List of 16</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ call              :Class 'formula'  language y ~ s(season, bs = "cc", k = 6)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..- attr(*, ".Environment")=&lt;environment: 0x55ae37a1b6b0&gt; </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..- attr(*, ".Environment")=&lt;environment: 0x55e0ddf706c8&gt; </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ trend_call        : NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ family            : chr "poisson"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ family_pars       : NULL</span>
@@ -894,12 +895,18 @@ multispecies forecasts to navigate the dynamics of ecological predictability. Pe
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ series_1: int [1:60] 4 5 7 39 51 26 6 6 4 2 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ series_2: int [1:60] NA 2 12 16 6 31 9 15 5 3 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ series_3: int [1:60] 4 NA 4 NA NA 16 7 7 3 NA ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ train_times       : int [1:60] 1 2 3 4 5 6 7 8 9 10 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ train_times       :List of 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ series_1: int [1:60] 1 2 3 4 5 6 7 8 9 10 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ series_2: int [1:60] 1 2 3 4 5 6 7 8 9 10 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ series_3: int [1:60] 1 2 3 4 5 6 7 8 9 10 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ test_observations :List of 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ series_1: int [1:20] 1 NA NA 13 18 20 16 6 NA 4 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ series_2: int [1:20] 4 36 8 6 7 NA NA 1 6 4 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ series_3: int [1:20] 6 8 5 5 19 14 1 1 7 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ test_times        : int [1:20] 61 62 63 64 65 66 67 68 69 70 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ test_times        :List of 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ series_1: int [1:20] 61 62 63 64 65 66 67 68 69 70 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ series_2: int [1:20] 61 62 63 64 65 66 67 68 69 70 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ series_3: int [1:20] 61 62 63 64 65 66 67 68 69 70 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ hindcasts         :List of 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ series_1: num [1:1000, 1:60] 8 3 1 5 7 1 8 3 5 2 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..- attr(*, "dimnames")=List of 2</span>
@@ -918,6 +925,23 @@ multispecies forecasts to navigate the dynamics of ecological predictability. Pe
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ series_2: int [1:1000, 1:20] 2 13 3 13 8 1 11 4 7 6 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ series_3: int [1:1000, 1:20] 15 1 12 3 6 7 7 5 33 10 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - attr(*, "class")= chr "mvgam_forecast"</span>
+<span class="r-in"><span><span class="va">fc_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fc</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">fc_summary</span>, <span class="fl">12</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 12 × 7</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    series    time predQ50 predQ2.5 predQ97.5 truth type    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> series_1     1     4.5        1      11       4 response</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> series_1     2     4          1      11       5 response</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> series_1     3     8          3      17       7 response</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> series_1     4    36         22      53      39 response</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> series_1     5    50         31      71.0    51 response</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> series_1     6    24         13      39      26 response</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> series_1     7     7          2      16       6 response</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> series_1     8     5          1      13       6 response</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> series_1     9     4          1      10       4 response</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> series_1    10     3          0       8       2 response</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> series_1    11     4          0      11       5 response</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span> series_1    12     5          1      12       5 response</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fc</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Out of sample DRPS:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 57.427275</span>
@@ -981,21 +1005,164 @@ multispecies forecasts to navigate the dynamics of ecological predictability. Pe
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Computed from 1000 by 164 log-likelihood matrix.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          Estimate   SE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> elpd_loo   -460.5  9.4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> p_loo        89.8  5.4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> looic       921.1 18.8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          Estimate    SE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> elpd_loo   -812.9  97.8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> p_loo       128.3  34.8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> looic      1625.8 195.7</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MCSE of elpd_loo is NA.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> MCSE and ESS estimates assume MCMC draws (r_eff in [0.4, 1.6]).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MCSE and ESS estimates assume MCMC draws (r_eff in [0.3, 1.0]).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Pareto k diagnostic values:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                           Count Pct.    Min. ESS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (-Inf, 0.67]   (good)     78    47.6%   60      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    (0.67, 1]   (bad)      73    44.5%   &lt;NA&gt;    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     (1, Inf)   (very bad) 13     7.9%   &lt;NA&gt;    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (-Inf, 0.67]   (good)     150   91.5%   46      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    (0.67, 1]   (bad)       10    6.1%   &lt;NA&gt;    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     (1, Inf)   (very bad)   4    2.4%   &lt;NA&gt;    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> See help('pareto-k-diagnostic') for details.</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>mc.cores <span class="op">=</span> <span class="va">mc.cores.def</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Fit a model to the portal time series that uses a latent</span></span></span>
+<span class="r-in"><span><span class="co"># Vector Autoregression of order 1</span></span></span>
+<span class="r-in"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu">mvgam</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  formula <span class="op">=</span> <span class="va">captures</span> <span class="op">~</span> <span class="op">-</span><span class="fl">1</span>,</span></span>
+<span class="r-in"><span>  trend_formula <span class="op">=</span> <span class="op">~</span> <span class="va">trend</span>,</span></span>
+<span class="r-in"><span>  trend_model <span class="op">=</span> <span class="fu"><a href="RW.html">VAR</a></span><span class="op">(</span>cor <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">poisson</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">portal_data</span>,</span></span>
+<span class="r-in"><span>  chains <span class="op">=</span> <span class="fl">2</span>,</span></span>
+<span class="r-in"><span>  silent <span class="op">=</span> <span class="fl">2</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Plot the autoregressive coefficient distributions;</span></span></span>
+<span class="r-in"><span><span class="co"># use 'dir = "v"' to arrange the order of facets</span></span></span>
+<span class="r-in"><span><span class="co"># correctly</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://paulbuerkner.com/brms/reference/mcmc_plot.brmsfit.html" class="external-link">mcmc_plot</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">mod</span>,</span></span>
+<span class="r-in"><span>  variable <span class="op">=</span> <span class="st">'A'</span>,</span></span>
+<span class="r-in"><span>  regex <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>  type <span class="op">=</span> <span class="st">'hist'</span>,</span></span>
+<span class="r-in"><span>  facet_args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>dir <span class="op">=</span> <span class="st">'v'</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</span>
+<span class="r-plt img"><img src="mvgam-14.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Plot the process error variance-covariance matrix in the same way;</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://paulbuerkner.com/brms/reference/mcmc_plot.brmsfit.html" class="external-link">mcmc_plot</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">mod</span>,</span></span>
+<span class="r-in"><span>  variable <span class="op">=</span> <span class="st">'Sigma'</span>,</span></span>
+<span class="r-in"><span>  regex <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>  type <span class="op">=</span> <span class="st">'hist'</span>,</span></span>
+<span class="r-in"><span>  facet_args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>dir <span class="op">=</span> <span class="st">'v'</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</span>
+<span class="r-plt img"><img src="mvgam-15.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Calulate Generalized IRFs for each series</span></span></span>
+<span class="r-in"><span><span class="va">irfs</span> <span class="op">&lt;-</span> <span class="fu"><a href="irf.mvgam.html">irf</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">mod</span>,</span></span>
+<span class="r-in"><span>  h <span class="op">=</span> <span class="fl">12</span>,</span></span>
+<span class="r-in"><span>  cumulative <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Plot some of them</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">irfs</span>, series <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="mvgam-16.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">irfs</span>, series <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="mvgam-17.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Calulate forecast error variance decompositions for each series</span></span></span>
+<span class="r-in"><span><span class="va">fevds</span> <span class="op">&lt;-</span> <span class="fu"><a href="fevd.mvgam.html">fevd</a></span><span class="op">(</span><span class="va">mod</span>, h <span class="op">=</span> <span class="fl">12</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Plot median contributions to forecast error variance</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fevds</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="mvgam-18.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Now fit a model that uses two RW dynamic factors to model</span></span></span>
+<span class="r-in"><span><span class="co"># the temporal dynamics of the four rodent species</span></span></span>
+<span class="r-in"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu">mvgam</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">captures</span> <span class="op">~</span> <span class="va">series</span>,</span></span>
+<span class="r-in"><span>  trend_model <span class="op">=</span> <span class="fu"><a href="RW.html">RW</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  use_lv <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>  n_lv <span class="op">=</span> <span class="fl">2</span>,</span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">portal_data</span>,</span></span>
+<span class="r-in"><span>  chains <span class="op">=</span> <span class="fl">2</span>,</span></span>
+<span class="r-in"><span>  silent <span class="op">=</span> <span class="fl">2</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Warning in '/tmp/RtmpFE8SxD/model_fe1a9373f4bc428a5906ce7b23b30b3c.stan', line 20, column 31: Found</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     int division:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>       n_lv * (n_lv - 1) / 2</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     Values will be rounded towards zero. If rounding is not desired you can</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     write</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     the division as</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>       n_lv * (n_lv - 1) / 2.0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     If rounding is intended please use the integer division operator %/%.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Warning in '/tmp/RtmpFE8SxD/model-250f5bd2d2fb.stan', line 20, column 33: Found</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     int division:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>       n_lv * (n_lv - 1) / 2</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     Values will be rounded towards zero. If rounding is not desired you can</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     write</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     the division as</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>       n_lv * (n_lv - 1) / 2.0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     If rounding is intended please use the integer division operator %/%.</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Plot the factors</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod</span>, type <span class="op">=</span> <span class="st">'factors'</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="mvgam-19.png" alt="" width="700" height="433"></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Factor   Contribution</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Factor 1        0.532</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> Factor 2        0.468</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Plot the hindcasts</span></span></span>
+<span class="r-in"><span><span class="va">hcs</span> <span class="op">&lt;-</span> <span class="fu"><a href="hindcast.mvgam.html">hindcast</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">hcs</span>,</span></span>
+<span class="r-in"><span>     series <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> No non-missing values in test_observations; cannot calculate forecast score</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 17 rows containing missing values or values outside the scale range</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> (`geom_point()`).</span>
+<span class="r-plt img"><img src="mvgam-20.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">hcs</span>,</span></span>
+<span class="r-in"><span>     series <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> No non-missing values in test_observations; cannot calculate forecast score</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 17 rows containing missing values or values outside the scale range</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> (`geom_point()`).</span>
+<span class="r-plt img"><img src="mvgam-21.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">hcs</span>,</span></span>
+<span class="r-in"><span>     series <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> No non-missing values in test_observations; cannot calculate forecast score</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 17 rows containing missing values or values outside the scale range</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> (`geom_point()`).</span>
+<span class="r-plt img"><img src="mvgam-22.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">hcs</span>,</span></span>
+<span class="r-in"><span>     series <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> No non-missing values in test_observations; cannot calculate forecast score</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 17 rows containing missing values or values outside the scale range</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> (`geom_point()`).</span>
+<span class="r-plt img"><img src="mvgam-23.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Use residual_cor() to calculate temporal correlations among the series</span></span></span>
+<span class="r-in"><span><span class="co"># based on the factor loadings</span></span></span>
+<span class="r-in"><span><span class="va">lvcors</span> <span class="op">&lt;-</span> <span class="fu"><a href="residual_cor.jsdgam.html">residual_cor</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="index-mvgam.html">names</a></span><span class="op">(</span><span class="va">lvcors</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "cor"        "cor_lower"  "cor_upper"  "sig_cor"    "cov"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6] "prec"       "prec_lower" "prec_upper" "sig_prec"   "trace"     </span>
+<span class="r-in"><span><span class="va">lvcors</span><span class="op">$</span><span class="va">cor</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            DM        DO         PB         PP</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> DM  1.0000000 0.5156657 -0.5619562 -0.8214555</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> DO  0.5156657 1.0000000  0.3661782  0.0105830</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PB -0.5619562 0.3661782  1.0000000  0.9171802</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PP -0.8214555 0.0105830  0.9171802  1.0000000</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># For those correlations whose credible intervals did not include</span></span></span>
+<span class="r-in"><span><span class="co"># zero, plot them as a correlation matrix (all other correlations</span></span></span>
+<span class="r-in"><span><span class="co"># are shown as zero on this plot)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">lvcors</span>, cluster <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="mvgam-24.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example of supplying a trend_map so that some series can share</span></span></span>
@@ -1027,115 +1194,16 @@ multispecies forecasts to navigate the dynamics of ecological predictability. Pe
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    1    0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,]    1    0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,]    0    1</span>
-<span class="r-in"><span><span class="fu"><a href="code.html">code</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> // Stan model code generated by package mvgam</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> data {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   int&lt;lower=0&gt; total_obs; // total number of observations</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   int&lt;lower=0&gt; n; // number of timepoints per series</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   int&lt;lower=0&gt; n_lv; // number of dynamic factors</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   int&lt;lower=0&gt; n_sp; // number of smoothing parameters</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   int&lt;lower=0&gt; n_series; // number of series</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   matrix[n_series, n_lv] Z; // matrix mapping series to latent trends</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   int&lt;lower=0&gt; num_basis; // total number of basis coefficients</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   vector[num_basis] zero; // prior locations for basis coefficients</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   matrix[total_obs, num_basis] X; // mgcv GAM design matrix</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   array[n, n_series] int&lt;lower=0&gt; ytimes; // time-ordered matrix (which col in X belongs to each [time, series] observation?)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   matrix[4, 4] S1; // mgcv smooth penalty matrix S1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   int&lt;lower=0&gt; n_nonmissing; // number of nonmissing observations</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   array[n_nonmissing] int&lt;lower=0&gt; flat_ys; // flattened nonmissing observations</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   matrix[n_nonmissing, num_basis] flat_xs; // X values for nonmissing observations</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   array[n_nonmissing] int&lt;lower=0&gt; obs_ind; // indices of nonmissing observations</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> transformed data {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> parameters {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   // raw basis coefficients</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   vector[num_basis] b_raw;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   // latent factor SD terms</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   vector&lt;lower=0&gt;[n_lv] sigma;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   // latent factor AR1 terms</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   vector&lt;lower=-1, upper=1&gt;[n_lv] ar1;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   // dynamic factors</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   matrix[n, n_lv] LV;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   // smoothing parameters</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   vector&lt;lower=0&gt;[n_sp] lambda;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> transformed parameters {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   // trends and dynamic factor loading matrix</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   matrix[n, n_series] trend;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   // basis coefficients</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   vector[num_basis] b;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   b[1 : num_basis] = b_raw[1 : num_basis];</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   // derived latent trends</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   for (i in 1 : n) {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     for (s in 1 : n_series) {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       trend[i, s] = dot_product(Z[s,  : ], LV[i,  : ]);</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> model {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   // prior for (Intercept)...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   b_raw[1] ~ student_t(3, 0, 2.5);</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   // prior for s(season)...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   b_raw[2 : 5] ~ multi_normal_prec(zero[2 : 5], S1[1 : 4, 1 : 4] * lambda[1]);</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   // priors for AR parameters</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ar1 ~ std_normal();</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   // priors for smoothing parameters</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   lambda ~ normal(5, 30);</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   // priors for factor SD parameters</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   sigma ~ inv_gamma(1.418, 0.452);</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   // dynamic factor estimates</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   LV[1, 1 : n_lv] ~ normal(0, sigma);</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   for (j in 1 : n_lv) {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     LV[2 : n, j] ~ normal(ar1[j] * LV[1 : (n - 1), j], sigma[j]);</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     // likelihood functions</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     vector[n_nonmissing] flat_trends;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     flat_trends = to_vector(trend)[obs_ind];</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     flat_ys ~ poisson_log_glm(append_col(flat_xs, flat_trends), 0.0,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                               append_row(b, 1.0));</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> generated quantities {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   vector[total_obs] eta;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   matrix[n, n_series] mus;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   vector[n_sp] rho;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   vector[n_lv] penalty;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   array[n, n_series] int ypred;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   rho = log(lambda);</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   penalty = 1.0 / (sigma .* sigma);</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   matrix[n_series, n_lv] lv_coefs = Z;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   // posterior predictions</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   eta = X * b;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   for (s in 1 : n_series) {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     mus[1 : n, s] = eta[ytimes[1 : n, s]] + trend[1 : n, s];</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     ypred[1 : n, s] = poisson_log_rng(mus[1 : n, s]);</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># The first two series share an identical latent trend; the third is different</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="residual_cor.jsdgam.html">residual_cor</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="mvgam-25.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod</span>, type <span class="op">=</span> <span class="st">"trend"</span>, series <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="mvgam-14.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="mvgam-26.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod</span>, type <span class="op">=</span> <span class="st">"trend"</span>, series <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="mvgam-15.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="mvgam-27.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod</span>, type <span class="op">=</span> <span class="st">"trend"</span>, series <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="mvgam-16.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="mvgam-28.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example of how to use dynamic coefficients</span></span></span>
@@ -1148,7 +1216,7 @@ multispecies forecasts to navigate the dynamics of ecological predictability. Pe
 <span class="r-in"><span>  <span class="va">beta_temp</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">1</span>, mean <span class="op">=</span> <span class="va">beta_temp</span><span class="op">[</span><span class="va">i</span> <span class="op">-</span> <span class="fl">1</span><span class="op">]</span> <span class="op">-</span> <span class="fl">0.0025</span>, sd <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">beta_temp</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="mvgam-17.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="mvgam-29.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Simulate a covariate called 'temp'</span></span></span>
 <span class="r-in"><span><span class="va">temp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">N</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
@@ -1164,10 +1232,11 @@ multispecies forecasts to navigate the dynamics of ecological predictability. Pe
 <span class="r-in"><span><span class="va">data_train</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">180</span>, <span class="op">]</span></span></span>
 <span class="r-in"><span><span class="va">data_test</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">[</span><span class="fl">181</span><span class="op">:</span><span class="fl">200</span>, <span class="op">]</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Fit the model using the dynamic() formula helper</span></span></span>
+<span class="r-in"><span><span class="co"># Fit the model using the dynamic() function</span></span></span>
 <span class="r-in"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu">mvgam</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  formula <span class="op">=</span></span></span>
-<span class="r-in"><span>    <span class="va">out</span> <span class="op">~</span> <span class="fu"><a href="dynamic.html">dynamic</a></span><span class="op">(</span><span class="va">temp</span>,</span></span>
+<span class="r-in"><span>    <span class="va">out</span> <span class="op">~</span> <span class="fu"><a href="dynamic.html">dynamic</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>      <span class="va">temp</span>,</span></span>
 <span class="r-in"><span>      scale <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>      k <span class="op">=</span> <span class="fl">40</span></span></span>
 <span class="r-in"><span>    <span class="op">)</span>,</span></span>
@@ -1182,7 +1251,7 @@ multispecies forecasts to navigate the dynamics of ecological predictability. Pe
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> GAM formula:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> out ~ gp(time, by = temp, c = 5/4, k = 40, scale = FALSE)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55ae37a1b6b0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55e0ddf706c8&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Family:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> gaussian</span>
@@ -1270,18 +1339,18 @@ multispecies forecasts to navigate the dynamics of ecological predictability. Pe
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Use how_to_cite() to get started describing this model</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod</span>, type <span class="op">=</span> <span class="st">"smooths"</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="mvgam-18.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="va">fc</span> <span class="op">&lt;-</span> <span class="fu"><a href="forecast.mvgam.html">forecast</a></span><span class="op">(</span><span class="va">mod</span>, newdata <span class="op">=</span> <span class="va">data_test</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="mvgam-30.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="va">fc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast</a></span><span class="op">(</span><span class="va">mod</span>, newdata <span class="op">=</span> <span class="va">data_test</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fc</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Out of sample CRPS:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 6.48777085114583</span>
-<span class="r-plt img"><img src="mvgam-19.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="mvgam-31.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Propagating the smooth term shows how the coefficient is expected to evolve</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="plot_mvgam_smooth.html">plot_mvgam_smooth</a></span><span class="op">(</span><span class="va">mod</span>, smooth <span class="op">=</span> <span class="fl">1</span>, newdata <span class="op">=</span> <span class="va">data</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>v <span class="op">=</span> <span class="fl">180</span>, lty <span class="op">=</span> <span class="st">"dashed"</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points</a></span><span class="op">(</span><span class="va">beta_temp</span>, pch <span class="op">=</span> <span class="fl">16</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="mvgam-20.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="mvgam-32.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example showing how to incorporate an offset; simulate some count data</span></span></span>
@@ -1310,7 +1379,7 @@ multispecies forecasts to navigate the dynamics of ecological predictability. Pe
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Inspect the model file to see the modification to the linear predictor</span></span></span>
 <span class="r-in"><span><span class="co"># (eta)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="code.html">code</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://paulbuerkner.com/brms/reference/stancode.html" class="external-link">stancode</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> // Stan model code generated by package mvgam</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> data {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   int&lt;lower=0&gt; total_obs; // total number of observations</span>
@@ -1403,26 +1472,24 @@ multispecies forecasts to navigate the dynamics of ecological predictability. Pe
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Forecasts for the first two series will differ in magnitude</span></span></span>
-<span class="r-in"><span><span class="va">fc</span> <span class="op">&lt;-</span> <span class="fu"><a href="forecast.mvgam.html">forecast</a></span><span class="op">(</span><span class="va">mod</span>, newdata <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">data_test</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/layout.html" class="external-link">layout</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast</a></span><span class="op">(</span><span class="va">mod</span>, newdata <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">data_test</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fc</span>, series <span class="op">=</span> <span class="fl">1</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">75</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Out of sample DRPS:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 26.650371</span>
-<span class="r-plt img"><img src="mvgam-21.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="mvgam-33.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fc</span>, series <span class="op">=</span> <span class="fl">2</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">75</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Out of sample DRPS:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 101.645578</span>
-<span class="r-plt img"><img src="mvgam-22.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/layout.html" class="external-link">layout</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="mvgam-34.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Changing the offset for the testing data should lead to changes in</span></span></span>
 <span class="r-in"><span><span class="co"># the forecast</span></span></span>
 <span class="r-in"><span><span class="va">dat</span><span class="op">$</span><span class="va">data_test</span><span class="op">$</span><span class="va">offset</span> <span class="op">&lt;-</span> <span class="va">dat</span><span class="op">$</span><span class="va">data_test</span><span class="op">$</span><span class="va">offset</span> <span class="op">-</span> <span class="fl">2</span></span></span>
-<span class="r-in"><span><span class="va">fc</span> <span class="op">&lt;-</span> <span class="fu"><a href="forecast.mvgam.html">forecast</a></span><span class="op">(</span><span class="va">mod</span>, newdata <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">data_test</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast</a></span><span class="op">(</span><span class="va">mod</span>, newdata <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">data_test</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fc</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Out of sample DRPS:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 41.425863</span>
-<span class="r-plt img"><img src="mvgam-23.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="mvgam-35.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Relative Risks can be computed by fixing the offset to the same value</span></span></span>
 <span class="r-in"><span><span class="co"># for each series</span></span></span>
@@ -1453,7 +1520,7 @@ multispecies forecasts to navigate the dynamics of ecological predictability. Pe
 <span class="r-in"><span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">2</span><span class="op">:</span><span class="fl">50</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">preds_rr</span><span class="op">[</span><span class="va">i</span>, <span class="va">series2_inds</span><span class="op">]</span>, col <span class="op">=</span> <span class="st">"darkred"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-plt img"><img src="mvgam-24.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="mvgam-36.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/layout.html" class="external-link">layout</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
@@ -1482,7 +1549,7 @@ multispecies forecasts to navigate the dynamics of ecological predictability. Pe
 <span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="va">dat</span>, series <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">series</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">dat</span>, <span class="va">time</span>, <span class="va">series</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="plot_mvgam_series.html">plot_mvgam_series</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">dat</span>, series <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="mvgam-25.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="mvgam-37.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Fit a model using the binomial() family; must specify observations</span></span></span>
 <span class="r-in"><span><span class="co"># and number of trials in the cbind() wrapper</span></span></span>
@@ -1500,7 +1567,7 @@ multispecies forecasts to navigate the dynamics of ecological predictability. Pe
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> GAM formula:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> cbind(y, ntrials) ~ series + s(x, by = series)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55ae37a1b6b0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55e0ddf706c8&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Family:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> binomial</span>
@@ -1568,15 +1635,32 @@ multispecies forecasts to navigate the dynamics of ecological predictability. Pe
 <span class="r-in"><span>  type <span class="op">=</span> <span class="st">"bars_grouped"</span>,</span></span>
 <span class="r-in"><span>  group <span class="op">=</span> <span class="st">"series"</span>, ndraws <span class="op">=</span> <span class="fl">50</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="mvgam-26.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="mvgam-38.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="pp_check.mvgam.html">pp_check</a></span><span class="op">(</span><span class="va">mod</span>,</span></span>
 <span class="r-in"><span>  type <span class="op">=</span> <span class="st">"ecdf_overlay_grouped"</span>,</span></span>
 <span class="r-in"><span>  group <span class="op">=</span> <span class="st">"series"</span>, ndraws <span class="op">=</span> <span class="fl">50</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="mvgam-27.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="mvgam-39.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://paulbuerkner.com/brms/reference/conditional_effects.brmsfit.html" class="external-link">conditional_effects</a></span><span class="op">(</span><span class="va">mod</span>, type <span class="op">=</span> <span class="st">"link"</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="mvgam-28.png" alt="" width="700" height="433"></span>
-<span class="r-plt img"><img src="mvgam-29.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="mvgam-40.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="mvgam-41.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># To view predictions on the probability scale,</span></span></span>
+<span class="r-in"><span><span class="co"># use ntrials = 1 in datagrid()</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://marginaleffects.com/man/r/plot_predictions.html" class="external-link">plot_predictions</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">mod</span>,</span></span>
+<span class="r-in"><span>  by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'x'</span>, <span class="st">'series'</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  newdata <span class="op">=</span> <span class="fu"><a href="https://marginaleffects.com/man/r/datagrid.html" class="external-link">datagrid</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">100</span>, <span class="op">-</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                    series <span class="op">=</span> <span class="va">unique</span>,</span></span>
+<span class="r-in"><span>                    ntrials <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  type <span class="op">=</span> <span class="st">'expected'</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="mvgam-42.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># \dontshow{</span></span></span>
+<span class="r-in"><span><span class="co"># For R CMD check: make sure any open connections are closed afterward</span></span></span>
+<span class="r-in"><span> <span class="fu"><a href="https://rdrr.io/r/base/showConnections.html" class="external-link">closeAllConnections</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

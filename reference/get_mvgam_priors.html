@@ -12,7 +12,7 @@ changed for a given model, as well listing their default distributions"><meta pr
     
     <a class="navbar-brand me-2" href="../index.html">mvgam</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.51</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.57</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -157,7 +157,7 @@ source of error; similarly to what is estimated by <code><a href="https://rdrr.i
 <li><p><code>'AR1'</code> or <code>AR(p = 1)</code></p></li>
 <li><p><code>'AR2'</code> or <code>AR(p = 2)</code></p></li>
 <li><p><code>'AR3'</code> or <code>AR(p = 3)</code></p></li>
-<li><p><code>'CAR1'</code> or <code>CAR(p = 1)</code></p></li>
+<li><p><code>'CAR1'</code> or <code>CAR(p = 1)</code> (also known as an Ornstein–Uhlenbeck process)</p></li>
 <li><p><code>'VAR1'</code>  or <code><a href="RW.html">VAR()</a></code>(only available in <code>Stan</code>)</p></li>
 <li><p><code>'PWlogistic</code>, <code>'PWlinear'</code> or <code><a href="piecewise_trends.html">PW()</a></code> (only available in <code>Stan</code>)</p></li>
 <li><p><code>'GP'</code> or <code><a href="GP.html">GP()</a></code> (Gaussian Process with squared exponential kernel;
@@ -167,7 +167,7 @@ average and/or correlated process error terms can also be estimated (for
 example, <code>RW(cor = TRUE)</code> will set up a multivariate Random Walk if <code>n_series &gt; 1</code>).
 It is also possible for many multivariate trends to estimate hierarchical
 correlations if the data are structured among levels of a relevant grouping
-factor. See <a href="mvgam_trends.html">mvgam_trends</a> for more details and see <a href="ZMVN.html">ZMVN</a> for an example.</p></dd>
+factor. See <a href="mvgam_trends.html">mvgam_trends</a> for more details and see <code><a href="ZMVN.html">ZMVN()</a></code> for an example.</p></dd>
 
 
 <dt>family</dt>
@@ -214,14 +214,14 @@ use irregularly spaced intervals if using <code>trend_model = CAR(1)</code>, tho
 note that any
 temporal intervals that are exactly <code>0</code> will be adjusted to a very small number
 (<code>1e-12</code>) to prevent sampling errors. See an example of <code><a href="RW.html">CAR()</a></code> trends in
-<code><a href="RW.html">CAR</a></code></p></li>
+<code><a href="RW.html">CAR()</a></code></p></li>
 </ul><p>Note however that there are special cases where these identifiers are not
 needed. For
 example, models with hierarchical temporal correlation processes (e.g.
 <code>AR(gr = region, subgr = species)</code>)
 should NOT include a <code>series</code> identifier, as this will be constructed
 internally (see
-<code><a href="mvgam_trends.html">mvgam_trends</a></code> and <code><a href="RW.html">AR</a></code> for details). <code>mvgam</code> can also
+<code><a href="mvgam_trends.html">mvgam_trends</a></code> and <code><a href="RW.html">AR()</a></code> for details). <code><a href="mvgam.html">mvgam()</a></code> can also
 fit models that do not
 include a <code>time</code> variable if there are no temporal dynamic structures included
 (i.e. <code>trend_model = 'None'</code> or
@@ -248,7 +248,8 @@ Defaults to <code>series</code> to be consistent with other <code>mvgam</code> m
 <dt>use_lv</dt>
 <dd><p><code>logical</code>. If <code>TRUE</code>, use dynamic factors to estimate series'
 latent trends in a reduced dimension format. Only available for
-<code><a href="RW.html">RW()</a></code>, <code><a href="RW.html">AR()</a></code> and <code><a href="GP.html">GP()</a></code> trend models. Defaults to <code>FALSE</code></p></dd>
+<code><a href="RW.html">RW()</a></code>, <code><a href="RW.html">AR()</a></code> and <code><a href="GP.html">GP()</a></code> trend models. Defaults to <code>FALSE</code>. See
+<code><a href="lv_correlations.html">lv_correlations</a></code> for a worked example</p></dd>
 
 
 <dt>n_lv</dt>
@@ -268,7 +269,7 @@ trend each series should depend on. The <code>series</code> column should have a
 unique entry for each series in the data (names should perfectly match factor
 levels of the <code>series</code> variable in <code>data</code>). Note that if this is supplied,
 the intercept parameter in the process model will NOT be automatically suppressed.
-Not yet supported for models in wich the latent factors evolve in continuous time (<code><a href="RW.html">CAR()</a></code>).
+Not yet supported for models in which the latent factors evolve in continuous time (<code><a href="RW.html">CAR()</a></code>).
 See examples for details</p></dd>
 
 
@@ -662,10 +663,10 @@ example)</p>
 <span class="r-in"><span>              <span class="fu"><a href="https://paulbuerkner.com/brms/reference/set_prior.html" class="external-link">prior</a></span><span class="op">(</span><span class="fu">normal</span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.25</span><span class="op">)</span>, class <span class="op">=</span> <span class="va">ar1</span>, lb <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, ub <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>              <span class="fu"><a href="https://paulbuerkner.com/brms/reference/set_prior.html" class="external-link">prior</a></span><span class="op">(</span><span class="fu">normal</span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.25</span><span class="op">)</span>, class <span class="op">=</span> <span class="va">ar2</span>, lb <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, ub <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">brmsprior</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             prior  class coef group resp dpar nlpar   lb   ub source</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  normal(0.2, 0.5) mu_raw                            &lt;NA&gt; &lt;NA&gt;   user</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   normal(0, 0.25)    ar1                              -1    1   user</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   normal(0, 0.25)    ar2                              -1    1   user</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             prior  class coef group resp dpar nlpar   lb   ub tag source</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  normal(0.2, 0.5) mu_raw                            &lt;NA&gt; &lt;NA&gt;       user</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   normal(0, 0.25)    ar1                              -1    1       user</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   normal(0, 0.25)    ar2                              -1    1       user</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="mvgam.html">mvgam</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/s.html" class="external-link">s</a></span><span class="op">(</span><span class="va">series</span>, bs <span class="op">=</span> <span class="st">'re'</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>             <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/s.html" class="external-link">s</a></span><span class="op">(</span><span class="va">season</span>, bs <span class="op">=</span> <span class="st">'cc'</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span>,</span></span>
@@ -1078,9 +1079,9 @@ example)</p>
 <span class="r-in"><span><span class="va">brmsprior</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://paulbuerkner.com/brms/reference/set_prior.html" class="external-link">prior</a></span><span class="op">(</span><span class="fu">normal</span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0.5</span><span class="op">)</span>, class <span class="op">=</span> <span class="va">cov</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>              <span class="fu"><a href="https://paulbuerkner.com/brms/reference/set_prior.html" class="external-link">prior</a></span><span class="op">(</span><span class="fu">normal</span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.25</span><span class="op">)</span>, class <span class="op">=</span> <span class="va">Intercept</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">brmsprior</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             prior     class coef group resp dpar nlpar   lb   ub source</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  normal(0.2, 0.5)       cov                            &lt;NA&gt; &lt;NA&gt;   user</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   normal(0, 0.25) Intercept                            &lt;NA&gt; &lt;NA&gt;   user</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             prior     class coef group resp dpar nlpar   lb   ub tag source</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  normal(0.2, 0.5)       cov                            &lt;NA&gt; &lt;NA&gt;       user</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   normal(0, 0.25) Intercept                            &lt;NA&gt; &lt;NA&gt;       user</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">mod2</span> <span class="op">&lt;-</span> <span class="fu"><a href="mvgam.html">mvgam</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">cov</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/s.html" class="external-link">s</a></span><span class="op">(</span><span class="va">season</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>             data <span class="op">=</span> <span class="va">simdat</span><span class="op">$</span><span class="va">data_train</span>,</span></span>
